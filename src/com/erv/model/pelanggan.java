@@ -4,7 +4,6 @@
  */
 package com.erv.model;
 
-import java.sql.Date;
 import org.h2.util.StringUtils;
 
 /**
@@ -31,6 +30,8 @@ public class pelanggan {
     private String KODEPOS;
     private String RT;
     private String RW;
+    private String NOMOR;
+    private String BLOK;
     
     public pelanggan() {
         this.KODEPELANGGAN = "";
@@ -50,8 +51,10 @@ public class pelanggan {
         KECAMATAN="-";
         KELURAHAN="-";
         KODEPOS="-";
-        RT="";
-        RW="";
+        RT="-";
+        RW="-";
+        NOMOR = "-";
+        BLOK="-";
     }
 
     public String getKODEPELANGGAN() {
@@ -202,6 +205,22 @@ public class pelanggan {
 
     public void setRW(String RW) {
         this.RW = RW;
+    }
+
+    public String getNOMOR() {
+        return NOMOR;
+    }
+
+    public void setNOMOR(String NOMOR) {
+        this.NOMOR = NOMOR;
+    }
+
+    public String getBLOK() {
+        return BLOK;
+    }
+
+    public void setBLOK(String BLOK) {
+        this.BLOK = BLOK;
     }
 
 }

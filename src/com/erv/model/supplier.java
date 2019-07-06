@@ -5,6 +5,7 @@
 package com.erv.model;
 
 import java.sql.Date;
+import org.h2.util.StringUtils;
 
 /**
  *
@@ -100,7 +101,13 @@ public class supplier {
     }
 
     public void setNPWP(String NPWP) {
-        this.NPWP = NPWP;
+        String hasil="";
+        for(int i=0;i<NPWP.length();i++){
+            if(StringUtils.isNumber(String.valueOf(NPWP.charAt(i)))){
+                hasil+=NPWP.charAt(i);
+            }
+        }
+        this.NPWP = hasil;
     }
 
     public int getSTATUSAKTIF() {
