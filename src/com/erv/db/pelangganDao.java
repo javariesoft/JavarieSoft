@@ -32,7 +32,7 @@ public class pelangganDao {
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
-                + "?,?,?)";
+                + "?,?,?,?,?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
         pstmt.setString(1, bb.getKODEPELANGGAN());
@@ -53,7 +53,8 @@ public class pelangganDao {
         pstmt.setString(16, bb.getKODEPOS());
         pstmt.setString(17, bb.getRT());
         pstmt.setString(18, bb.getRW());
-        
+        pstmt.setString(19, bb.getNOMOR());
+        pstmt.setString(20, bb.getBLOK());
         boolean i = pstmt.execute();
         return i;
     }
@@ -83,6 +84,8 @@ public class pelangganDao {
             ubean.setKODEPOS(rs.getString("KODEPOS"));
             ubean.setRT(rs.getString("RT"));
             ubean.setRW(rs.getString("RW"));
+            ubean.setNOMOR(rs.getString("NOMOR"));
+            ubean.setBLOK(rs.getString("BLOK"));
             list.add(ubean);
         }
         rs.close();
@@ -116,6 +119,8 @@ public class pelangganDao {
             ubean.setKODEPOS(rs.getString("KODEPOS")); 
             ubean.setRT(rs.getString("RT"));
             ubean.setRW(rs.getString("RW"));
+            ubean.setNOMOR(rs.getString("NOMOR"));
+            ubean.setBLOK(rs.getString("BLOK"));
         }
 
         return ubean;
@@ -126,11 +131,11 @@ public class pelangganDao {
                 + "BATASKREDIT=?,KODEAKUN=?,"
                 + "NPWP=?,STATUSCABANG=?,NAMAPEMILIK=?,"
                 + "STATUSAKTIF=?, PROPINSI=?, KABUPATEN=?, KECAMATAN=?,"
-                + "KELURAHAN=?,KODEPOS=?, RT=?, RW=? "
+                + "KELURAHAN=?,KODEPOS=?, RT=?, RW=?, NOMOR=?, BLOK=? "
                 + "where KODEPELANGGAN=?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
-        pstmt.setString(18, bb.getKODEPELANGGAN());
+        pstmt.setString(20, bb.getKODEPELANGGAN());
         pstmt.setString(1, bb.getNAMA());
         pstmt.setString(2, bb.getALAMAT());
         pstmt.setString(3, bb.getHP());
@@ -148,6 +153,8 @@ public class pelangganDao {
         pstmt.setString(15, bb.getKODEPOS());
         pstmt.setString(16, bb.getRT());
         pstmt.setString(17, bb.getRW());
+        pstmt.setString(18, bb.getNOMOR());
+        pstmt.setString(19, bb.getBLOK());
         boolean i = pstmt.execute();
         return i;
     }
