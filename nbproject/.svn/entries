@@ -10,9 +10,9 @@ https://ervan-vaio/svn/server
 2012-01-21T14:48:49.287539Z
 14
 ervan
-
-
-
+has-props
+has-prop-mods
+svn:special svn:externals svn:needs-lock
 
 
 
@@ -25,6 +25,77 @@ ervan
 
 
 01878c8e-8555-0a49-bac6-e72ba7b1a87b
+
+build-impl.xml
+file
+
+
+
+
+2011-12-01T00:12:48.919168Z
+f6e0b8e4b5de56ef24b7a5197d390740
+2011-12-01T00:09:58.504421Z
+1
+ervan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+56348
+
+genfiles.properties
+file
+
+
+
+
+2011-12-01T00:12:48.916168Z
+49cc804deb4bac040153539adfce026f
+2011-12-01T00:09:58.504421Z
+1
+ervan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+475
+
+private
+dir
 
 project.properties
 file
@@ -93,75 +164,4 @@ ervan
 
 
 722
-
-genfiles.properties
-file
-
-
-
-
-2011-12-01T00:12:48.916168Z
-49cc804deb4bac040153539adfce026f
-2011-12-01T00:09:58.504421Z
-1
-ervan
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-475
-
-private
-dir
-
-build-impl.xml
-file
-
-
-
-
-2011-12-01T00:12:48.919168Z
-f6e0b8e4b5de56ef24b7a5197d390740
-2011-12-01T00:09:58.504421Z
-1
-ervan
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-56348
 
