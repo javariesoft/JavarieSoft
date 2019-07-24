@@ -32,6 +32,8 @@ public class pelanggan {
     private String RW;
     private String NOMOR;
     private String BLOK;
+    private boolean NIK;
+    private String ALAMATPEMILIK;
     
     public pelanggan() {
         this.KODEPELANGGAN = "";
@@ -55,6 +57,7 @@ public class pelanggan {
         RW="-";
         NOMOR = "-";
         BLOK="-";
+        ALAMATPEMILIK="";
     }
 
     public String getKODEPELANGGAN() {
@@ -221,6 +224,22 @@ public class pelanggan {
 
     public void setBLOK(String BLOK) {
         this.BLOK = BLOK;
+    }
+
+    public boolean isNIK() {
+        return NIK;
+    }
+
+    public void setNIK(boolean NIK) {
+        this.NIK = NIK;
+    }
+
+    public String getALAMATPEMILIK() {
+        return ALAMATPEMILIK;
+    }
+
+    public void setALAMATPEMILIK(String ALAMATPEMILIK) {
+        this.ALAMATPEMILIK = ALAMATPEMILIK;
     }
 
 }
