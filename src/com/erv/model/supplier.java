@@ -101,6 +101,10 @@ public class supplier {
     }
 
     public void setNPWP(String NPWP) {
+        this.NPWP = NPWP;
+    }
+    
+    public void setNPWPNoFormat(String NPWP) {
         String hasil="";
         for(int i=0;i<NPWP.length();i++){
             if(StringUtils.isNumber(String.valueOf(NPWP.charAt(i)))){

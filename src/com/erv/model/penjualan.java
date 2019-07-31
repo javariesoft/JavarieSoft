@@ -34,6 +34,7 @@ public class penjualan implements Serializable {
     private String STATUSDO;
     private double ONGKOSKIRIM;
     private double DISKONPERSEN;
+    private String JENISPAJAK;
     private List<rincipenjualan> rincipenjualans;
     private jurnal jurnal;
 
@@ -52,6 +53,7 @@ public class penjualan implements Serializable {
         this.JENISTRANS = "";
         this.ONGKOSKIRIM = 0;
         this.DISKONPERSEN = 0;
+        this.JENISPAJAK = "";
         rincipenjualans = new ArrayList<>();
 
     }
@@ -263,4 +265,13 @@ public class penjualan implements Serializable {
         return hpp;
     }
 
+    public String getJENISPAJAK() {
+        return JENISPAJAK;
+    }
+
+    public void setJENISPAJAK(String JENISPAJAK) {
+        this.JENISPAJAK = JENISPAJAK;
+    }
+
+    
 }
