@@ -129,6 +129,33 @@ public class returDao {
         return r;
     }
 
+    public static retur getReturIDJual(Connection c, int idjual) throws SQLException {
+        String sql = "select * from retur where idpenjualan=?";
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, idjual);
+        ResultSet rs = ps.executeQuery();
+        retur r = null;
+        while (rs.next()) {
+            r = new retur();
+            r.setID(rs.getInt(1));
+            r.setKODERETUR(rs.getString(2));
+            r.setTANGGAL(rs.getString(3));
+            r.setKODEPELANGGAN(rs.getString(4));
+            r.setKETERANGAN(rs.getString(5));
+            r.setIDPENJUALAN(rs.getInt(6));
+            r.setTAMBAHANTOTALRETUR(rs.getDouble(7));
+            r.setSTATUS(rs.getInt(8));
+            r.setTOTALRETUR(rs.getDouble(9));
+            r.setTOTALDISKON(rs.getDouble(10));
+            r.setTOTALPPN(rs.getDouble(11));
+            r.setTOTALHPP(rs.getDouble(12));
+            r.setRincireturList(rincireturDao.getRinciRetur(c, r.getID()));
+            r.setJurnal(jurnalDao.getJurnalKode(c, r.getKODERETUR()));
+        }
+        return r;
+    }
+
+    
     public static String setRetur(Connection conn) {
         String hasil = "";
         long jum = 1;

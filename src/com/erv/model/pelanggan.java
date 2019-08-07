@@ -34,6 +34,7 @@ public class pelanggan {
     private String BLOK;
     private boolean NIK;
     private String ALAMATPEMILIK;
+    private String JENISPAJAK;
     
     public pelanggan() {
         this.KODEPELANGGAN = "";
@@ -118,6 +119,16 @@ public class pelanggan {
 
     public String getNPWP() {
         return NPWP;
+    }
+    
+    public String getNPWPNoFormat() {
+        String hasil="";
+        for(int i=0;i<NPWP.length();i++){
+            if(StringUtils.isNumber(String.valueOf(NPWP.charAt(i)))){
+                hasil+=NPWP.charAt(i);
+            }
+        }
+        return hasil;
     }
 
     public void setNPWP(String NPWP) {
@@ -244,6 +255,14 @@ public class pelanggan {
 
     public void setALAMATPEMILIK(String ALAMATPEMILIK) {
         this.ALAMATPEMILIK = ALAMATPEMILIK;
+    }
+
+    public String getJENISPAJAK() {
+        return JENISPAJAK;
+    }
+
+    public void setJENISPAJAK(String JENISPAJAK) {
+        this.JENISPAJAK = JENISPAJAK;
     }
 
 }

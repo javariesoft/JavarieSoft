@@ -31,7 +31,8 @@ public class pelangganDao {
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
-                + "?,?,?,?,?,?)";
+                + "?,?,?,?,?,"
+                + "?,?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
         pstmt.setString(1, bb.getKODEPELANGGAN());
@@ -55,6 +56,7 @@ public class pelangganDao {
         pstmt.setString(19, bb.getNOMOR());
         pstmt.setString(20, bb.getBLOK());
         pstmt.setBoolean(21, bb.isNIK());
+        pstmt.setString(22, bb.getJENISPAJAK());
         boolean i = pstmt.execute();
         return i;
     }
@@ -87,6 +89,7 @@ public class pelangganDao {
             ubean.setNOMOR(rs.getString("NOMOR"));
             ubean.setBLOK(rs.getString("BLOK"));
             ubean.setNIK(rs.getBoolean("NIK"));
+            ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
             list.add(ubean);
         }
         rs.close();
@@ -123,6 +126,7 @@ public class pelangganDao {
             ubean.setNOMOR(rs.getString("NOMOR"));
             ubean.setBLOK(rs.getString("BLOK"));
             ubean.setNIK(rs.getBoolean("NIK"));
+            ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
         }
 
         return ubean;
@@ -134,11 +138,11 @@ public class pelangganDao {
                 + "NPWP=?,STATUSCABANG=?,NAMAPEMILIK=?,"
                 + "STATUSAKTIF=?, PROPINSI=?, KABUPATEN=?, KECAMATAN=?,"
                 + "KELURAHAN=?,KODEPOS=?, RT=?, "
-                + "RW=?, NOMOR=?, BLOK=?, NIK=? "
+                + "RW=?, NOMOR=?, BLOK=?, NIK=?, JENISPAJAK=? "
                 + "where KODEPELANGGAN=?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
-        pstmt.setString(21, bb.getKODEPELANGGAN());
+        
         pstmt.setString(1, bb.getNAMA());
         pstmt.setString(2, bb.getALAMAT());
         pstmt.setString(3, bb.getHP());
@@ -159,6 +163,8 @@ public class pelangganDao {
         pstmt.setString(18, bb.getNOMOR());
         pstmt.setString(19, bb.getBLOK());
         pstmt.setBoolean(20, bb.isNIK());
+        pstmt.setString(21, bb.getJENISPAJAK());
+        pstmt.setString(22, bb.getKODEPELANGGAN());
         boolean i = pstmt.execute();
         return i;
     }

@@ -38,7 +38,7 @@ public class penjualanDao {
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
-                + "?,?,?)";
+                + "?,?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
         pstmt.setInt(1, bb.getID());
@@ -60,7 +60,6 @@ public class penjualanDao {
         pstmt.setString(15, bb.getSTATUSDO());
         pstmt.setDouble(16, bb.getONGKOSKIRIM());
         pstmt.setDouble(17, bb.getDISKONPERSEN());
-        pstmt.setString(18, bb.getJENISPAJAK());
         boolean i = pstmt.execute();
         pstmt.close();
         return i;
@@ -283,7 +282,6 @@ public class penjualanDao {
             ubean.setSTATUSDO(rs.getString("STATUSDO"));
             ubean.setONGKOSKIRIM(rs.getDouble("ONGKOSKIRIM"));
             ubean.setDISKONPERSEN(rs.getDouble("DISKONPERSEN"));
-            ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
             ubean.setRincipenjualans(rincipenjualanDao.getAllDetails(con, id)); 
             ubean.setJurnal(jurnalDao.getJurnalKode(con, ubean.getFAKTUR()));
         }
@@ -316,7 +314,6 @@ public class penjualanDao {
             ubean.setSTATUSDO(rs.getString("STATUSDO"));
             ubean.setONGKOSKIRIM(rs.getDouble("ONGKOSKIRIM"));
             ubean.setDISKONPERSEN(rs.getDouble("DISKONPERSEN"));
-            ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
         }
 
         return ubean;
@@ -326,7 +323,7 @@ public class penjualanDao {
         String sql = "update PENJUALAN set FAKTUR=?,TANGGAL=?,KODEPELANGGAN=?,CASH=?,"
                 + "TGLLUNAS=?,PPN=?,DP=?,DISKON=?,STATUS=?,IDSALES=?,TAMBAHANTOTAL=?, "
                 + "JENISTRANS=?, IDBANK=?, STATUSDO=?, "
-                + "ONGKOSKIRIM=?, DISKONPERSEN=?, JENISPAJAK=? "
+                + "ONGKOSKIRIM=?, DISKONPERSEN=? "
                 + "where ID=?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
@@ -346,8 +343,7 @@ public class penjualanDao {
         pstmt.setString(14, bb.getSTATUSDO());
         pstmt.setDouble(15, bb.getONGKOSKIRIM());
         pstmt.setDouble(16, bb.getDISKONPERSEN());
-        pstmt.setString(17, bb.getJENISPAJAK());
-        pstmt.setInt(18, bb.getID());
+        pstmt.setInt(17, bb.getID());
 
         boolean i = pstmt.execute();
         return i;

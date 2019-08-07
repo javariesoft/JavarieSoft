@@ -27,6 +27,7 @@ public class retur {
     private double TOTALHPP;
     private List<rinciretur> rincireturList;
     private jurnal jurnal;
+    private penjualan penjualan;
     
     public retur() {
         this.STATUS = 0;
@@ -172,6 +173,14 @@ public class retur {
         hasil.put("hpp", hpp);
         hasil.put("totalretur", totalretur);
         return hasil;
+    }
+
+    public penjualan getPenjualan() {
+        return penjualan;
+    }
+
+    public void setPenjualan(penjualan penjualan) {
+        this.penjualan = penjualan;
     }
     
 }
