@@ -98,6 +98,8 @@ public class penjualanDao {
             for (ListIterator<rincipenjualan> lt = detail.listIterator(); lt.hasNext();) {
                 rincipenjualan bb = lt.next();
                 bb.setID(idrp);
+                //Perbaikan
+                bb.setIDPENJUALAN(IDjual);
                 rincipenjualanDao.insert(con, bb);
 
                 if (bb.getIDDO() == 0) {
