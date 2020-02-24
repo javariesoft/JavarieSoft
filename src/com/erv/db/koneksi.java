@@ -29,12 +29,9 @@ public class koneksi {
     private static int maxConnections = 25;
 //    private static String urlJ = "jdbc:h2:tcp://192.168.1.5:9092/~/dbalkesmrta";
     private static String urlJ = "jdbc:h2:tcp://"+IP+"/~/dbalkesmrta";
-//    private static String urlJ = "jdbc:h2:tcp://"+IP+"/~/dbalkesmrtafixpersediaan";
     private static String urlM = "jdbc:h2:mem:";
     private static String username = "sa";
     private static String password = "b6587937d3b03f7f829c5e667bb8a1e5";
-////    private static String password = "184d2ac7b544d549156e5d0adadb86c7";
-////    private static String password = "bfcf3a51563cf589585a6aeefaaea038";
     //public static String IP = "192.168.1.5:9092";
     
     public static String pwstemp;
@@ -84,7 +81,7 @@ public class koneksi {
 //    }
     public static Connection getKoneksiJ() throws SQLException {
         System.out.println(getStatus());
-        System.out.println("Koneksi DB Alkes");
+        System.out.println("Koneksi DB Alkes Rusak");
         if (poolMgr.getActiveConnections() >= maxConnections) {
             poolMgr.dispose();
             createPoolKoneksi();

@@ -445,7 +445,7 @@ public class penjualanDao {
 //                + "and substring(kodejurnal,6,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodejurnal,"+kodeDepan.length()+")='"+kodeDepan+"'";
 
         String sql = "select max(right(faktur,4)) from penjualan "
-                + "where substring(faktur,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(faktur,2)='MA'";
+                + "where substring(faktur,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(faktur,2)='02'";
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(sql);
@@ -454,7 +454,7 @@ public class penjualanDao {
                     jum = rs.getInt(1) + 1;
                 }
             }
-            hasil = "MA." + com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
+            hasil = "02." + com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
             rs.close();
             stat.close();
         } catch (Exception ex) {
