@@ -209,6 +209,23 @@ public class DODao {
             stat.close();
         return hasil;
     }
+    
+    public static int getStokDO(Connection con, String tgl, String kodebarang) throws SQLException {
+        int hasil = 0;
+        String sql = "select (sum(in) - sum(out)) as hasil from "
+                + "VIEWSTOKDO where TANGGAL <= ? and kodebarang=?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, tgl);
+        ps.setString(2, kodebarang);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            hasil = rs.getInt(1);
+        }
+        rs.close();
+        ps.close();
+        return hasil;
+    }
+
 
     public static class triggerDO implements Trigger {
 
