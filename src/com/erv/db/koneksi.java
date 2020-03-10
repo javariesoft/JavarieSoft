@@ -81,7 +81,7 @@ public class koneksi {
 //    }
     public static Connection getKoneksiJ() throws SQLException {
         System.out.println(getStatus());
-        System.out.println("Koneksi DB Alkes Rusak");
+        System.out.println("Koneksi DB Alkes");
         if (poolMgr.getActiveConnections() >= maxConnections) {
             poolMgr.dispose();
             createPoolKoneksi();
