@@ -491,7 +491,7 @@ public class Fungsi {
 
     public static boolean cekVersi(String versi) {
         boolean hasil = false;
-        if (versi.equals("VERSI7.7MRTAALKES")) {
+        if (versi.equals("VERSI7.8MRTAALKES")) {
             hasil = true;
         }
         return hasil;
