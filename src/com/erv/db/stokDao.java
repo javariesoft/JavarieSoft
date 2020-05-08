@@ -67,13 +67,26 @@ public class stokDao {
         return true;
     }
 
-    public static void deleteFromSTOK(Connection con, int id1, String id2, String id3, String id4) throws SQLException {
-        String sql = "DELETE FROM STOK WHERE IDPENJUALAN = ? AND KODEBARANG=? AND KODETRANS=? AND KODEBATCH=?";
+    public static void deleteFromSTOK(Connection con, int IDPENJUALAN, String KODEBARANG, String KODETRANS, String KODEBATCH) throws SQLException {
+        String sql = "DELETE FROM STOK "
+                + "WHERE IDPENJUALAN = ? AND KODEBARANG=? "
+                + "AND KODETRANS=? AND KODEBATCH=?";
         PreparedStatement statement = con.prepareStatement(sql);
-        statement.setInt(1, id1);
-        statement.setString(2, id2);
-        statement.setString(3, id3);
-        statement.setString(4, id4);
+        statement.setInt(1, IDPENJUALAN);
+        statement.setString(2, KODEBARANG);
+        statement.setString(3, KODETRANS);
+        statement.setString(4, KODEBATCH);
+        statement.executeUpdate();
+        statement.close();
+    }
+    
+    public static void deleteFromSTOK(Connection con, int IDPENJUALAN, String KODETRANS) throws SQLException {
+        String sql = "DELETE FROM STOK "
+                + "WHERE IDPENJUALAN=?  "
+                + "AND KODETRANS=?";
+        PreparedStatement statement = con.prepareStatement(sql);
+        statement.setInt(1, IDPENJUALAN);
+        statement.setString(2, KODETRANS);
         statement.executeUpdate();
         statement.close();
     }
@@ -94,21 +107,21 @@ public class stokDao {
 
         return hasil;
     }
-    
-    public static int getStok(Connection con, String tanggal, String kodebarang){
+
+    public static int getStok(Connection con, String tanggal, String kodebarang) {
         String tgltemp[] = tanggal.split("-");
         int bulan = Integer.parseInt(tgltemp[1]);
         int tahun = Integer.parseInt(tgltemp[2]);
-        int in=0,out=0;
-        int stok=0;
+        int in = 0, out = 0;
+        int stok = 0;
         // 2019-01-01
-        String periode = ((bulan - 1)==0?(tahun - 1):tahun)+"."+((bulan - 1)==0?12:(bulan - 1));
+        String periode = ((bulan - 1) == 0 ? (tahun - 1) : tahun) + "." + ((bulan - 1) == 0 ? 12 : (bulan - 1));
         try {
             StokPeriode stokPeriode = StokPeriodeDao.getStokPeriode(con, kodebarang, periode);
             String temp = "select sum(in) as in, sum(out) as out from stok where tanggal = ? and KODEBARANG=?";
             PreparedStatement ps = con.prepareStatement(temp);
             ResultSet rs = ps.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 in = rs.getInt(1);
                 out = rs.getInt(2);
                 stok = stokPeriode.getJumlah() + in - out;
@@ -118,16 +131,16 @@ public class stokDao {
         }
         return stok;
     }
-    
-    public static stok getStok(Connection con, int id, String kodetrans) throws SQLException{
-        String sql="select * from stok where idpenjualan=? and kodetrans=?";
+
+    public static stok getStok(Connection con, int id, String kodetrans) throws SQLException {
+        String sql = "select * from stok where idpenjualan=? and kodetrans=?";
         PreparedStatement ps = con.prepareStatement(sql);
         ps.setInt(1, id);
         ps.setString(2, kodetrans);
         ResultSet rs = ps.executeQuery();
-        stok s=null;
-        if(rs.next()){
-            s=new stok();
+        stok s = null;
+        if (rs.next()) {
+            s = new stok();
             s.setIDPENJUALAN(rs.getInt("IDPENJUALAN"));
             s.setIN(rs.getInt("IN"));
             s.setKODEBARANG(rs.getString("KODEBARANG"));
@@ -138,7 +151,6 @@ public class stokDao {
         }
         return s;
     }
-
 
     public static class triggerStok implements Trigger {
 
@@ -159,7 +171,7 @@ public class stokDao {
         public void fire(Connection conn,
                 Object[] oldRow, Object[] newRow)
                 throws SQLException {
-          //mulai  
+            //mulai  
             Statement stat = conn.createStatement();
             String pesan = "";
             if (newRow != null && oldRow == null) {
@@ -171,7 +183,7 @@ public class stokDao {
                         String sql = "update BARANGSTOKBATCH set STOK=STOK +" + Integer.parseInt(newRow[3].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + newRow[6].toString() + "'";
                         stat.execute(sql);
                         pesan += " Stok Batch Bertambah " + newRow[3];
-                    }else{
+                    } else {
                         Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, newRow[1].toString());
                         String sql = "update BARANGSTOKBATCH set STOK=STOK +" + Integer.parseInt(newRow[3].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='-'";
                         stat.execute(sql);
@@ -186,31 +198,30 @@ public class stokDao {
                         String sql = "update BARANGSTOKBATCH set STOK=STOK -" + Integer.parseInt(newRow[4].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + newRow[6].toString() + "'";
                         stat.execute(sql);
                         pesan += " Stok Batch Berkurang " + newRow[4];
-                    } else{
+                    } else {
                         Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, newRow[1].toString());
                         String sql = "update BARANGSTOKBATCH set STOK=STOK -" + Integer.parseInt(newRow[4].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='-'";
                         stat.execute(sql);
                         pesan += " Stok Batch Berkurang " + newRow[4];
                     }
                 }
-
                 System.out.println(pesan);
             } else if (newRow == null && oldRow != null) {
                 String sql = "";
                 if (Integer.parseInt(oldRow[3].toString()) != 0) {
                     sql = "Update BARANGSTOK set STOK=STOK-" + Integer.parseInt(oldRow[3].toString()) + " where KODEBARANG='" + oldRow[1].toString() + "'";
                     stat.execute(sql);
-                     pesan += " Stok Barang Bekurang " + oldRow[3];
+                    pesan += " Stok Barang Bekurang " + oldRow[3];
                     if (!oldRow[6].toString().equals("")) {
                         Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, oldRow[1].toString());
                         sql = "update BARANGSTOKBATCH set STOK=STOK -" + Integer.parseInt(oldRow[3].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + oldRow[6].toString() + "'";
                         stat.execute(sql);
-                         pesan += " Stok Batch Bekurang " + oldRow[3];
-                    }else {
+                        pesan += " Stok Batch Bekurang " + oldRow[3];
+                    } else {
                         Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, oldRow[1].toString());
                         sql = "update BARANGSTOKBATCH set STOK=STOK -" + Integer.parseInt(oldRow[3].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='-'";
                         stat.execute(sql);
-                         pesan += " Stok Batch Bekurang " + oldRow[3];
+                        pesan += " Stok Batch Bekurang " + oldRow[3];
                     }
                 }
 
@@ -225,12 +236,51 @@ public class stokDao {
                         pesan += " Stok Batch Bertambah " + oldRow[4];
                     } else {
                         Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, oldRow[1].toString());
-                        sql = "update BARANGSTOKBATCH set STOK=STOK +" + Integer.parseInt(oldRow[4].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + oldRow[6].toString() + "'";
+                        sql = "update BARANGSTOKBATCH set STOK=STOK +" + Integer.parseInt(oldRow[4].toString()) + " where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='-'";
                         stat.execute(sql);
                         pesan += " Stok Batch Bertambah " + oldRow[4];
                     }
                 }
                 System.out.println("Delete Stok Update Barang : " + pesan);
+            } else if (newRow != null && oldRow != null) {
+                String sql;
+                System.out.println("-------------------------");
+                if (Integer.parseInt(oldRow[3].toString()) != 0) {
+                    System.out.println("Edit Stok IN");
+                    int selisih = (int) newRow[3] - (int) oldRow[3];
+                    sql = "Update BARANGSTOK set STOK=STOK+(" + selisih + ") where KODEBARANG='" + newRow[1].toString() + "'";
+                    stat.execute(sql);
+                    System.out.println("Edit Barang Stok dari " + oldRow[3] + " jadi " + newRow[3]);
+                    if (!oldRow[6].toString().equals("")) {
+                        Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, newRow[1].toString());
+                        sql = "update BARANGSTOKBATCH set STOK=STOK +(" + selisih + ") where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + oldRow[6].toString() + "'";
+                        stat.execute(sql);
+                        System.out.println("Update Stok batch dari " + oldRow[3] + " jadi " + newRow[3]);
+                    } else {
+                        Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, newRow[1].toString());
+                        sql = "update BARANGSTOKBATCH set STOK=STOK +(" + selisih + ") where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='-'";
+                        stat.execute(sql);
+                        System.out.println("Update Stok batch dari " + oldRow[3] + " jadi " + newRow[3]);
+                    }
+                }
+                if (Integer.parseInt(oldRow[4].toString()) != 0) {
+                    System.out.println("Edit Stok OUT");
+                    int selisih = (int) newRow[3] - (int) oldRow[3];
+                    sql = "Update BARANGSTOK set STOK=STOK+(" + selisih + ") where KODEBARANG='" + newRow[1].toString() + "'";
+                    stat.execute(sql);
+                    System.out.println("Edit Barang Stok dari " + oldRow[4] + " jadi " + newRow[4]);
+                    if (!oldRow[6].toString().equals("")) {
+                        Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, newRow[1].toString());
+                        sql = "update BARANGSTOKBATCH set STOK=STOK +(" + selisih + ") where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + oldRow[6].toString() + "'";
+                        stat.execute(sql);
+                        System.out.println("Update Stok batch dari " + oldRow[4] + " jadi " + newRow[4]);
+                    } else {
+                        Barangstok bs = BarangstokDao.getDetailKodeBarang(conn, oldRow[1].toString());
+                        sql = "update BARANGSTOKBATCH set STOK=STOK +(" + selisih + ") where IDBARANGSTOK=" + bs.getID() + " AND KODEBATCH='" + oldRow[6].toString() + "'";
+                        stat.execute(sql);
+                        System.out.println("Update Stok batch dari " + oldRow[4] + " jadi " + newRow[4]);
+                    }
+                }
             }
         }
 

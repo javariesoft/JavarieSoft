@@ -22,7 +22,7 @@ public class DORinciDao {
     public static boolean insertIntoDORinci(Connection con, DORinci d) throws SQLException {
         PreparedStatement statement = null;
         String sql = "INSERT INTO DORinci "
-                + "VALUES (?, ?, ?,?,?,?,?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         statement = con.prepareStatement(sql);
         statement.setInt(1, d.getIDDO());
         statement.setString(2, d.getKODEBARANG());
@@ -31,6 +31,7 @@ public class DORinciDao {
         statement.setString(5, d.getKODEBATCH());
         statement.setString(6, d.getEXPIRE());
         statement.setInt(7, d.getJUMLAHKECIL());
+        statement.setDouble(8, d.getHARGA());
         boolean h = statement.execute();
         statement.close();
         return !h;
@@ -38,15 +39,17 @@ public class DORinciDao {
 
     public static boolean updateDORinci(Connection conn, DORinci d) throws SQLException {
         PreparedStatement statement = null;
-        statement = conn.prepareStatement("update DORINCI set JUMLAH = ?,SATUAN=?,EXPIRE=?,JUMLAHKECIL=? "
-                + "where IDDO = ? AND KODEBARANG = ? AND KODEBATCH=? ");
+        String sql = "update DORINCI set JUMLAH=?, SATUAN=?, EXPIRE=?, JUMLAHKECIL=?, HARGA=? "
+                + "where IDDO = ? AND KODEBARANG = ? AND KODEBATCH=? ";
+        statement = conn.prepareStatement(sql);
         statement.setInt(1, d.getJUMLAH());
         statement.setString(2, d.getSATUAN());
         statement.setString(3, d.getEXPIRE());
-        statement.setInt(4, d.getJUMLAHKECIL());        
-        statement.setInt(5, d.getIDDO());
-        statement.setString(6, d.getKODEBARANG());  
-        statement.setString(7, d.getKODEBATCH());  
+        statement.setInt(4, d.getJUMLAHKECIL());
+        statement.setDouble(5, d.getHARGA());
+        statement.setInt(6, d.getIDDO());
+        statement.setString(7, d.getKODEBARANG());
+        statement.setString(8, d.getKODEBATCH());
         boolean h = statement.execute();
         statement.close();
         return !h;
@@ -60,7 +63,7 @@ public class DORinciDao {
         statement.close();
     }
 
-    public static void deleteFromDORinciDetil(Connection con, int IDDO, String KODEBARANG,String KODEBATCH) throws SQLException {
+    public static void deleteFromDORinciDetil(Connection con, int IDDO, String KODEBARANG, String KODEBATCH) throws SQLException {
         String sql = "DELETE FROM DORinci WHERE IDDO = ? AND KODEBARANG=? AND KODEBATCH=?";
         PreparedStatement statement = con.prepareStatement(sql);
         statement.setInt(1, IDDO);
@@ -70,7 +73,7 @@ public class DORinciDao {
         statement.close();
     }
 
-    public static DORinci getDetails(Connection con, int IDDO, String KODEBARANG,String KODEBATCH) throws SQLException, ClassNotFoundException {
+    public static DORinci getDetails(Connection con, int IDDO, String KODEBARANG, String KODEBATCH) throws SQLException, ClassNotFoundException {
         //here we will write code to get a single record from database
         PreparedStatement pstmt = con.prepareStatement("select * from DORinci where IDDO=? AND KODEBARANG=?  AND KODEBATCH=?");
         pstmt.setInt(1, IDDO);
@@ -86,12 +89,13 @@ public class DORinciDao {
             ubean.setKODEBATCH(rs.getString(5));
             ubean.setEXPIRE(rs.getString(6));
             ubean.setJUMLAHKECIL(rs.getInt(7));
+            ubean.setHARGA(rs.getDouble("HARGA"));
         }
         rs.close();
         pstmt.close();
         return ubean;
     }
-    
+
     public static List<DORinci> getDetailDORinci(Connection con, int IDDO) throws SQLException {
         //here we will write code to get a single record from database
         List<DORinci> list = new ArrayList<DORinci>();
@@ -99,7 +103,7 @@ public class DORinciDao {
         pstmt.setInt(1, IDDO);
         ResultSet rs = pstmt.executeQuery();
         DORinci ubean = null;
-        while (rs.next()) {     
+        while (rs.next()) {
             ubean = new DORinci();
             ubean.setIDDO(rs.getInt(1));
             ubean.setKODEBARANG(rs.getString(2));
@@ -108,6 +112,7 @@ public class DORinciDao {
             ubean.setKODEBATCH(rs.getString(5));
             ubean.setEXPIRE(rs.getString(6));
             ubean.setJUMLAHKECIL(rs.getInt(7));
+            ubean.setHARGA(rs.getDouble("HARGA"));
             ubean.setBarangstok(BarangstokDao.getDetailKodeBarang(con, ubean.getKODEBARANG()));
             list.add(ubean);
         }
@@ -115,34 +120,34 @@ public class DORinciDao {
         pstmt.close();
         return list;
     }
-    
-    public static boolean cekKodeBarangBatch(Connection con, String viddo,String vkdpel,String vkdbrg,String vkdbatch) throws SQLException {
+
+    public static boolean cekKodeBarangBatch(Connection con, String viddo, String vkdpel, String vkdbrg, String vkdbatch) throws SQLException {
         boolean hasil = false;
-            Statement stat = con.createStatement();
-            ResultSet rs = stat.executeQuery("Select DR.KODEBARANG,BR.NAMABARANG, DR.KODEBATCH\n" +
-                         " FROM DO inner join DORINCI DR on DO.ID = DR.IDDO\n" +
-                         " inner join BARANG BR on BR.KODEBARANG=DR.KODEBARANG\n" +
-                         " inner join JENISBARANG JB on BR.IDJENIS = JB.ID\n" +
-                         " where DO.ID = '" + viddo + "' and DO.KODEPELANGGAN='" + vkdpel + "' and DR.KODEBARANG='" + vkdbrg + "' and DR.KODEBATCH='" + vkdbatch + "'");
-            if (rs.next()) {
-                if (rs.getString(1) != null) {
-                    hasil = true;
-                }
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery("Select DR.KODEBARANG,BR.NAMABARANG, DR.KODEBATCH\n"
+                + " FROM DO inner join DORINCI DR on DO.ID = DR.IDDO\n"
+                + " inner join BARANG BR on BR.KODEBARANG=DR.KODEBARANG\n"
+                + " inner join JENISBARANG JB on BR.IDJENIS = JB.ID\n"
+                + " where DO.ID = '" + viddo + "' and DO.KODEPELANGGAN='" + vkdpel + "' and DR.KODEBARANG='" + vkdbrg + "' and DR.KODEBATCH='" + vkdbatch + "'");
+        if (rs.next()) {
+            if (rs.getString(1) != null) {
+                hasil = true;
             }
-            rs.close();
-            stat.close();
+        }
+        rs.close();
+        stat.close();
         return hasil;
     }
-    
-    public static boolean cekKodeBarangDO(Connection con, String vkddo,String vkdpel,String vkdbrg,String vkdbatch) throws SQLException {
+
+    public static boolean cekKodeBarangDO(Connection con, String vkddo, String vkdpel, String vkdbrg, String vkdbatch) throws SQLException {
         //String periode = thn + "." + bln;    
         boolean hasil1 = false;
         Statement stat = con.createStatement();
-        ResultSet rs = stat.executeQuery("Select DR.KODEBARANG,BR.NAMABARANG, DR.KODEBATCH\n" +
-                         " FROM DO inner join DORINCI DR on DO.ID = DR.IDDO\n" +
-                         " inner join BARANG BR on BR.KODEBARANG=DR.KODEBARANG\n" +
-                         " inner join JENISBARANG JB on BR.IDJENIS = JB.ID\n" +
-                         " where DO.KODEDO = '" + vkddo + "' and DO.KODEPELANGGAN='" + vkdpel + "' and DR.KODEBARANG='" + vkdbrg + "' and DR.KODEBATCH='" + vkdbatch + "'");
+        ResultSet rs = stat.executeQuery("Select DR.KODEBARANG,BR.NAMABARANG, DR.KODEBATCH\n"
+                + " FROM DO inner join DORINCI DR on DO.ID = DR.IDDO\n"
+                + " inner join BARANG BR on BR.KODEBARANG=DR.KODEBARANG\n"
+                + " inner join JENISBARANG JB on BR.IDJENIS = JB.ID\n"
+                + " where DO.KODEDO = '" + vkddo + "' and DO.KODEPELANGGAN='" + vkdpel + "' and DR.KODEBARANG='" + vkdbrg + "' and DR.KODEBATCH='" + vkdbatch + "'");
 
         if (rs.next()) {
             if (rs.getString(1) != null) {
@@ -153,8 +158,8 @@ public class DORinciDao {
         stat.close();
         return hasil1;
     }
-    
-    public static int getStokDO(Connection con, String vkddo,String vkdpel,String vkdbrg,String vkdbatch) {
+
+    public static int getStokDO(Connection con, String vkddo, String vkdpel, String vkdbrg, String vkdbatch) {
         int hasil = 0;
         String sql = "Select DR.KODEBARANG,BR.NAMABARANG, DR.KODEBATCH, DR.EXPIRE, "
                 + "DR.JUMLAHKECIL - IFNULL((SELECT RETURDORINCI.JUMLAHKECIL AS RETURDORINCI_JUMLAHKECIL "
@@ -169,10 +174,10 @@ public class DORinciDao {
             Statement stat = con.createStatement();
             ResultSet rs = stat.executeQuery(sql);
             if (rs.next()) {
-                if(rs.getString(1)!=null){
+                if (rs.getString(1) != null) {
                     hasil = rs.getInt(5);
                 }
-            } 
+            }
 //            hasil = 0;
             rs.close();
             stat.close();

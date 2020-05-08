@@ -16,7 +16,14 @@ public class DORinci {
     private String KODEBATCH;
     private String EXPIRE;
     private int JUMLAHKECIL;
+    private double HARGA;
+    private double TOTAL;
+    private double PPN;
     private Barangstok barangstok;
+
+    public DORinci() {
+        HARGA = 0;
+    }
 
     public int getIDDO() {
         return IDDO;
@@ -81,5 +88,30 @@ public class DORinci {
     public void setBarangstok(Barangstok barangstok) {
         this.barangstok = barangstok;
     }
-    
+
+    public double getHARGA() {
+        return HARGA;
+    }
+
+    public void setHARGA(double HARGA) {
+        this.HARGA = HARGA;
+    }
+
+    public double getTOTAL() {
+        TOTAL = JUMLAH * HARGA;
+        return TOTAL;
+    }
+
+    public void setTOTAL(double TOTAL) {
+        this.TOTAL = TOTAL;
+    }
+
+    public double getPPN() {
+        PPN = 0.1 * getTOTAL();
+        return PPN;
+    }
+
+    public void setPPN(double PPN) {
+        this.PPN = PPN;
+    }
 }
