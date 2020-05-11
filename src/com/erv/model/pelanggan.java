@@ -35,6 +35,8 @@ public class pelanggan {
     private boolean NIK;
     private String ALAMATPEMILIK;
     private String JENISPAJAK;
+    private String APOTEKER;
+    private String STRAAPOTEKER;
     
     public pelanggan() {
         this.KODEPELANGGAN = "";
@@ -59,6 +61,8 @@ public class pelanggan {
         NOMOR = "-";
         BLOK="-";
         ALAMATPEMILIK="";
+        APOTEKER="";
+        STRAAPOTEKER = "";
     }
 
     public String getKODEPELANGGAN() {
@@ -263,6 +267,22 @@ public class pelanggan {
 
     public void setJENISPAJAK(String JENISPAJAK) {
         this.JENISPAJAK = JENISPAJAK;
+    }
+
+    public String getAPOTEKER() {
+        return APOTEKER;
+    }
+
+    public void setAPOTEKER(String APOTEKER) {
+        this.APOTEKER = APOTEKER;
+    }
+
+    public String getSTRAAPOTEKER() {
+        return STRAAPOTEKER;
+    }
+
+    public void setSTRAAPOTEKER(String STRAAPOTEKER) {
+        this.STRAAPOTEKER = STRAAPOTEKER;
     }
 
 }

@@ -32,7 +32,7 @@ public class pelangganDao {
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
                 + "?,?,?,?,?,"
-                + "?,?,?)";
+                + "?,?,?,?,?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
         pstmt.setString(1, bb.getKODEPELANGGAN());
@@ -58,7 +58,8 @@ public class pelangganDao {
         pstmt.setBoolean(21, bb.isNIK());
         pstmt.setString(22, bb.getALAMATPEMILIK());
         pstmt.setString(23, bb.getJENISPAJAK());
-        
+        pstmt.setString(24, bb.getAPOTEKER());
+        pstmt.setString(25, bb.getSTRAAPOTEKER());
         boolean i = pstmt.execute();
         return i;
     }
@@ -93,6 +94,8 @@ public class pelangganDao {
             ubean.setNIK(rs.getBoolean("NIK"));
             ubean.setALAMATPEMILIK(rs.getString("ALAMATPEMILIK"));
             ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
+            ubean.setAPOTEKER(rs.getString("APOTEKER"));
+            ubean.setSTRAAPOTEKER(rs.getString("STRAAPOTEKER"));
             list.add(ubean);
         }
         rs.close();
@@ -131,6 +134,8 @@ public class pelangganDao {
             ubean.setNIK(rs.getBoolean("NIK"));
             ubean.setALAMATPEMILIK(rs.getString("ALAMATPEMILIK"));
             ubean.setJENISPAJAK(rs.getString("JENISPAJAK"));
+            ubean.setAPOTEKER(rs.getString("APOTEKER"));
+            ubean.setSTRAAPOTEKER(rs.getString("STRAAPOTEKER"));
         }
 
         return ubean;
@@ -142,7 +147,8 @@ public class pelangganDao {
                 + "NPWP=?,STATUSCABANG=?,NAMAPEMILIK=?,"
                 + "STATUSAKTIF=?, PROPINSI=?, KABUPATEN=?, KECAMATAN=?,"
                 + "KELURAHAN=?,KODEPOS=?, RT=?, "
-                + "RW=?, NOMOR=?, BLOK=?, NIK=?, JENISPAJAK=?, ALAMATPEMILIK=? "
+                + "RW=?, NOMOR=?, BLOK=?, NIK=?, JENISPAJAK=?, "
+                + "ALAMATPEMILIK=?, APOTEKER=?, STRAAPOTEKER=? "
                 + "where KODEPELANGGAN=?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
@@ -170,6 +176,8 @@ public class pelangganDao {
         pstmt.setString(21, bb.getJENISPAJAK());
         pstmt.setString(22, bb.getALAMATPEMILIK());
         pstmt.setString(23, bb.getKODEPELANGGAN());
+        pstmt.setString(24, bb.getAPOTEKER());
+        pstmt.setString(25, bb.getSTRAAPOTEKER());
         boolean i = pstmt.execute();
         return i;
     }
