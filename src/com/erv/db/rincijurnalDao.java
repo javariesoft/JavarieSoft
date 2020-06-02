@@ -73,12 +73,14 @@ public class rincijurnalDao {
     }
     
     public static boolean updateRINCIJURNAL(Connection con, rincijurnal r) throws SQLException {
-        String sql = "update rincijurnal set debet=?, kredit=? where kodejurnal=? and kodeperkiraan=?";
+        String sql = "update rincijurnal set debet=?, kredit=? "
+                + "where kodejurnal=? and kodeperkiraan=? and no=?";
         PreparedStatement statement = con.prepareStatement(sql);
         statement.setDouble(1, r.getDEBET());
         statement.setDouble(2, r.getKREDIT());
         statement.setString(3, r.getKODEJURNAL());
         statement.setString(4, r.getKODEPERKIRAAN());
+        statement.setInt(5, r.getNO());
         boolean i = statement.execute();
         statement.close();
         return i;

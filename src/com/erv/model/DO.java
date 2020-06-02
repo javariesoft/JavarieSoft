@@ -91,5 +91,12 @@ public class DO {
     public void setdORincis(List<DORinci> dORincis) {
         this.dORincis = dORincis;
     }
+
+    @Override
+    public String toString() {
+        return KODEDO+","+TANGGAL+","+KODEPELANGGAN+","+STATUS+","+TGLTUTUP+","+STATUSAKTIF;
+    }
+    
+    
     
 }

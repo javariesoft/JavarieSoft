@@ -175,9 +175,9 @@ public class pelangganDao {
         pstmt.setBoolean(20, bb.isNIK());
         pstmt.setString(21, bb.getJENISPAJAK());
         pstmt.setString(22, bb.getALAMATPEMILIK());
-        pstmt.setString(23, bb.getKODEPELANGGAN());
-        pstmt.setString(24, bb.getAPOTEKER());
-        pstmt.setString(25, bb.getSTRAAPOTEKER());
+        pstmt.setString(23, bb.getAPOTEKER());
+        pstmt.setString(24, bb.getSTRAAPOTEKER());
+        pstmt.setString(25, bb.getKODEPELANGGAN());
         boolean i = pstmt.execute();
         return i;
     }

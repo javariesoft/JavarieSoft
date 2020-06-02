@@ -99,6 +99,14 @@ public class hutangbayarDao {
         statement.executeUpdate();
         statement.close();
     }
+    
+    public static void deleteFromHUTANGBAYAR(Connection con, String ref) throws SQLException {
+        String sql = "DELETE FROM HUTANGBAYAR WHERE REF = ?";
+        PreparedStatement statement = con.prepareStatement(sql);
+        statement.setString(1, ref);
+        statement.executeUpdate();
+        statement.close();
+    }
 
     public static int getID(Connection c) throws SQLException {
         int hasil = 1;

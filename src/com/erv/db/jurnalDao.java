@@ -76,10 +76,10 @@ public class jurnalDao {
         statement.close();
     }
 
-    public static void deleteJURNAL(Connection con, String keyId) throws SQLException {
+    public static void deleteJURNAL(Connection con, String kodejurnal) throws SQLException {
         String sql = "DELETE FROM JURNAL WHERE KODEJURNAL = ?";
         PreparedStatement statement = con.prepareStatement(sql);
-        statement.setString(1, keyId);
+        statement.setString(1, kodejurnal);
         statement.executeUpdate();
         statement.close();
     }

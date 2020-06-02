@@ -12,6 +12,7 @@ import java.util.List;
  * @author USER
  */
 public class PO {
+
     private int id;
     private String kodepo;
     private String tanggal;
@@ -19,7 +20,6 @@ public class PO {
     private pelanggan pelanggan;
     private String nofaktur;
     private List<PoRinci> poRincis;
-    
 
     public int getId() {
         return id;
@@ -76,6 +76,9 @@ public class PO {
     public void setNofaktur(String nofaktur) {
         this.nofaktur = nofaktur;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return id+","+kodepo+","+tanggal+","+kodepelanggan+","+nofaktur;
+    }
 }

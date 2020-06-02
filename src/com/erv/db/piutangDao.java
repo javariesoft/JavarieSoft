@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.h2.api.Trigger;
 
 /**
@@ -165,7 +163,7 @@ public class piutangDao {
         statement.executeUpdate();
         statement.close();
     }
-
+    
     public static int getID(Connection c) throws SQLException {
         int hasil = 1;
         PreparedStatement pstmt = c.prepareStatement("select max(id) from PIUTANG");
@@ -254,7 +252,7 @@ public class piutangDao {
         pstmt.setInt(1, id);
         ResultSet rs = pstmt.executeQuery();
         piutang ubean = new piutang();
-        while (rs.next()) {
+        if (rs.next()) {
             ubean.setID(rs.getInt(1));
             ubean.setKODEPIUTANG(rs.getString(2));
             ubean.setIDPENJUALAN(rs.getInt(3));
@@ -264,8 +262,9 @@ public class piutangDao {
             ubean.setJATUHTEMPO(rs.getString(7));
             ubean.setKETERANGAN(rs.getString(8));
             ubean.setSTATUS(rs.getString(9));
+            return ubean;
         }
-        return ubean;
+        return null;
     }
 
     public static double getJumlahPiutangPelanggan(Connection conn, String idpelanggan) throws SQLException {
