@@ -334,29 +334,117 @@ public class Fungsi {
         return hasil;
     }
 
-    public static double getSaldoAwalKasPiutang(Connection conn, String kodeakun, int bulan, int tahun, boolean pajak) {
+    public static double getSaldoAwalKasPiutang(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
         String sql="";
         if(pajak){
-            sql = "select ifnull(sum(debet) - sum(kredit),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
-                    + "where j.KODEJURNAL in ( "
-                    + "select KODEPIUTANGBAYAR from PIUTANGBAYAR pb, PIUTANG pt, penjualan jual  "
-                    + "where pt.id = pb.idpiutang and pt.idpenjualan = jual.id and ppn <> 0 "
-                    + ")  "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"%'  "
-                    + "and year(j.tanggal)="+tahun+" and month(j.tanggal)="+bulan+" "
+            sql = "select "
+                    + "    sum(debet) - sum (kredit) as saldo "
+                    + "from "
+                    + "    JURNAL j  "
+                    + "inner join "
+                    + "    RINCIJURNAL rj  "
+                    + "        on j.id = rj.KODEJURNAL  "
+                    + "where "
+                    + "    ( "
+                    + "        j.KODEJURNAL in ( "
+                    + "            select "
+                    + "                KODEPIUTANGBAYAR  "
+                    + "            from "
+                    + "                PIUTANGBAYAR pb, "
+                    + "                PIUTANG pt, "
+                    + "                penjualan jual  "
+                    + "            where "
+                    + "                pt.id = pb.idpiutang  "
+                    + "                and pt.idpenjualan = jual.id  "
+                    + "                and ppn <> 0  "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF  "
+                    + "                from "
+                    + "                    PIUTANGBAYAR pb, "
+                    + "                    PIUTANG pt, "
+                    + "                    penjualan jual  "
+                    + "                where "
+                    + "                    pt.id = pb.idpiutang  "
+                    + "                    and pt.idpenjualan = jual.id  "
+                    + "                    and ppn <> 0  "
+                    + "            ) "
+                    + "        ) "
+                    + "    ) "
+                    + "    and rj.KODEPERKIRAAN like '11110' "
+                    + "    and tanggal < '"+tanggal+"' "
                     + "";
-        }else{
-            sql = "select ifnull(sum(debet) - sum(kredit),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
-                    + "where j.KODEJURNAL in ( "
-                    + "select KODEPIUTANGBAYAR from PIUTANGBAYAR pb, PIUTANG pt, penjualan jual  "
-                    + "where pt.id = pb.idpiutang and pt.idpenjualan = jual.id and ppn <> 0 "
-                    + ")  "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"'  "
-                    + "and year(j.tanggal)="+tahun+" and month(j.tanggal)="+bulan+" "
+        } else {
+            sql = "select "
+                    + "    sum(debet) - sum (kredit) as saldo "
+                    + "from "
+                    + "    JURNAL j  "
+                    + "inner join "
+                    + "    RINCIJURNAL rj  "
+                    + "        on j.id = rj.KODEJURNAL  "
+                    + "where "
+                    + "    ( "
+                    + "        j.KODEJURNAL in ( "
+                    + "            select "
+                    + "                KODEPIUTANGBAYAR  "
+                    + "            from "
+                    + "                PIUTANGBAYAR pb, "
+                    + "                PIUTANG pt, "
+                    + "                penjualan jual  "
+                    + "            where "
+                    + "                pt.id = pb.idpiutang  "
+                    + "                and pt.idpenjualan = jual.id  "
+                    + "                and ppn = 0  "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF  "
+                    + "                from "
+                    + "                    PIUTANGBAYAR pb, "
+                    + "                    PIUTANG pt, "
+                    + "                    penjualan jual  "
+                    + "                where "
+                    + "                    pt.id = pb.idpiutang  "
+                    + "                    and pt.idpenjualan = jual.id  "
+                    + "                    and ppn = 0  "
+                    + "            ) "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    KODEPIUTANGBAYAR  "
+                    + "                from "
+                    + "                    PIUTANGBAYAR pb, "
+                    + "                    PIUTANG pt, "
+                    + "                    penjualan jual  "
+                    + "                where "
+                    + "                    pt.id = pb.idpiutang  "
+                    + "                    and pt.idpenjualan = 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF  "
+                    + "                from "
+                    + "                    PIUTANGBAYAR pb, "
+                    + "                    PIUTANG pt, "
+                    + "                    penjualan jual  "
+                    + "                where "
+                    + "                    pt.id = pb.idpiutang  "
+                    + "                    and pt.idpenjualan = 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "    ) "
+                    + "    and rj.KODEPERKIRAAN like '11110' "
+                    + "    and tanggal < '"+tanggal+"' "
                     + "";
         }
-        
+
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(sql);
@@ -408,27 +496,117 @@ public class Fungsi {
         return hasil;
     }
 
-    public static double getSaldoAwalKasHutang(Connection conn, String kodeakun, int bulan, int tahun, boolean pajak) {
+    public static double getSaldoAwalKasHutang(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
         String sql="";
         if(pajak){
-            sql = "select ifnull(sum(kredit)-sum(debet),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL  "
-                    + "where j.KODEJURNAL in (  "
-                    + "select KODEHUTANGBAYAR from HUTANGBAYAR hb, HUTANG ht, PEMBELIAN beli   "
-                    + "where ht.id = hb.IDHUTANG and ht.IDPEMBELIAN = beli.id and pajak <> 0  "
-                    + ")   "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"%' and month(tanggal)="+bulan+" and year(tanggal)="+tahun+" "
+            sql = "select "
+                    + "   sum (debet) - sum (kredit) as saldo "
+                    + "from "
+                    + "    JURNAL j "
+                    + "inner join "
+                    + "    RINCIJURNAL rj "
+                    + "        on j.id = rj.KODEJURNAL "
+                    + "where "
+                    + "    ( "
+                    + "        j.KODEJURNAL in ( "
+                    + "            select "
+                    + "                KODEHUTANGBAYAR "
+                    + "            from "
+                    + "                HUTANGBAYAR hb, "
+                    + "                HUTANG h, "
+                    + "                PEMBELIAN beli "
+                    + "            where "
+                    + "                h.id = hb.IDHUTANG "
+                    + "                and h.IDPEMBELIAN = beli.id "
+                    + "                and pajak <> 0 "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF "
+                    + "                from "
+                    + "                    HUTANGBAYAR hb, "
+                    + "                    HUTANG h, "
+                    + "                    PEMBELIAN beli "
+                    + "                where "
+                    + "                    h.id = hb.IDHUTANG "
+                    + "                    and h.IDPEMBELIAN = beli.id "
+                    + "                    and pajak <> 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "    ) "
+                    + "    and rj.KODEPERKIRAAN like '11110' "
+                    + "   and tanggal < '"+tanggal+"' "
                     + "";
-        }else{
-            sql = "select ifnull(sum(kredit)-sum(debet),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL  "
-                    + "where j.KODEJURNAL in (  "
-                    + "select KODEHUTANGBAYAR from HUTANGBAYAR hb, HUTANG ht, PEMBELIAN beli   "
-                    + "where ht.id = hb.IDHUTANG and ht.IDPEMBELIAN = beli.id and pajak = 0  "
-                    + ")   "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"%' and month(tanggal)="+bulan+" and year(tanggal)="+tahun+" "
+        } else {
+            sql = "select "
+                    + "   sum (debet) - sum (kredit) as saldo "
+                    + "from "
+                    + "    JURNAL j "
+                    + "inner join "
+                    + "    RINCIJURNAL rj "
+                    + "        on j.id = rj.KODEJURNAL "
+                    + "where "
+                    + "    ( "
+                    + "        j.KODEJURNAL in ( "
+                    + "            select "
+                    + "                KODEHUTANGBAYAR "
+                    + "            from "
+                    + "                HUTANGBAYAR hb, "
+                    + "                HUTANG h, "
+                    + "                PEMBELIAN beli "
+                    + "            where "
+                    + "                h.id = hb.IDHUTANG "
+                    + "                and h.IDPEMBELIAN = beli.id "
+                    + "                and pajak = 0 "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF "
+                    + "                from "
+                    + "                    HUTANGBAYAR hb, "
+                    + "                    HUTANG h, "
+                    + "                    PEMBELIAN beli "
+                    + "                where "
+                    + "                    h.id = hb.IDHUTANG "
+                    + "                    and h.IDPEMBELIAN = beli.id "
+                    + "                    and pajak = 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    KODEHUTANGBAYAR "
+                    + "                from "
+                    + "                    HUTANGBAYAR hb, "
+                    + "                    HUTANG h, "
+                    + "                    PEMBELIAN beli "
+                    + "                where "
+                    + "                    h.id = hb.IDHUTANG "
+                    + "                    and h.IDPEMBELIAN = 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "        OR ( "
+                    + "            j.KODEJURNAL in ( "
+                    + "                select "
+                    + "                    REF "
+                    + "                from "
+                    + "                    HUTANGBAYAR hb, "
+                    + "                    HUTANG h, "
+                    + "                    PEMBELIAN beli "
+                    + "                where "
+                    + "                    h.id = hb.IDHUTANG "
+                    + "                    and h.IDPEMBELIAN = 0 "
+                    + "            ) "
+                    + "        ) "
+                    + "    ) "
+                    + "    and rj.KODEPERKIRAAN like '11110' "
+                    + "   and tanggal < '"+tanggal+"' "
                     + "";
         }
-        
+
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(sql);
@@ -444,8 +622,6 @@ public class Fungsi {
         return hasil;
     }
 
-    
-    
     public static double getLaba(Connection conn, int bulan, int tahun) {
         double hasil = 0.0;
         try {
@@ -719,8 +895,8 @@ public class Fungsi {
         try {
             koneksi.createPoolKoneksi();
             Connection con = koneksi.getKoneksiJ();
-            System.out.println("Jual" + getSaldoAwalKasPenjualan(con,"11110","2020-01-01", true));
-            System.out.println("Beli" + getSaldoAwalKasPembelian(con,"11110","2020-01-01", true));
+            System.out.println("Hutang" + getSaldoAwalKasHutang(con,"11110","2020-01-01", true));
+            System.out.println("Piutang" + getSaldoAwalKasPiutang(con,"11110","2020-01-01", true));
             con.close();
         } catch (Exception ex) {
             Logger.getLogger(Fungsi.class.getName()).log(Level.SEVERE, null, ex);
