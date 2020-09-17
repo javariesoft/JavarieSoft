@@ -9,6 +9,7 @@ import com.erv.function.PrintfFormat;
 import com.erv.function.Util;
 import com.erv.model.Barangstok;
 import com.erv.model.DO;
+import com.erv.model.Nofak;
 import com.erv.model.bank;
 import com.erv.model.jurnal;
 import com.erv.model.penjualan;
@@ -283,7 +284,7 @@ public class penjualanDao {
             ubean.setSTATUSDO(rs.getString("STATUSDO"));
             ubean.setONGKOSKIRIM(rs.getDouble("ONGKOSKIRIM"));
             ubean.setDISKONPERSEN(rs.getDouble("DISKONPERSEN"));
-            ubean.setRincipenjualans(rincipenjualanDao.getAllDetails(con, id)); 
+            ubean.setRincipenjualans(rincipenjualanDao.getAllDetails(con, id));
             ubean.setJurnal(jurnalDao.getJurnalKode(con, ubean.getFAKTUR()));
         }
         rs.close();
@@ -407,7 +408,7 @@ public class penjualanDao {
 //        }
 //        return hasil;
 //    }
-    public static String setFakturPajak(Connection conn) {
+    public static String setFakturPajak1(Connection conn) {
 
         String hasil = "";
         String tgl = com.erv.function.Util.toDateStringSql(new Date());
@@ -434,7 +435,43 @@ public class penjualanDao {
         }
         return hasil;
     }
-    
+
+    public static String setFakturPajak(Connection conn) {
+
+        String hasil = "";
+        String tgl = com.erv.function.Util.toDateStringSql(new Date());
+        int jum = 1;
+//         String sql = "select max(right(kodejurnal,4)) from jurnal "
+//                + "where substring(kodejurnal,4,2)='" + Util.getbln(tgl) + "' "
+//                + "and substring(kodejurnal,6,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodejurnal,"+kodeDepan.length()+")='"+kodeDepan+"'";
+
+        String sql = "select max(right(faktur,6)) from penjualan "
+                + "where substring(faktur,0,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
+        try {
+            Nofak nofak = NofakDao.getNofak(conn, 1);
+            Statement stat = conn.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                if (rs.getString(1) != null) {
+                    jum = rs.getInt(1);
+                    if (nofak != null) {
+                        if(nofak.getNofak() > jum){
+                            jum = nofak.getNofak();
+                        }else{
+                            jum = rs.getInt(1) + 1;
+                        }    
+                    }
+                }
+            }
+            hasil = com.erv.function.Util.getthn(tgl).substring(2, 4) + "." + new PrintfFormat("%06d").sprintf(jum);
+            rs.close();
+            stat.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return hasil;
+    }
+
     public static String setFakturTanpaPajak(Connection conn) {
 
         String hasil = "";
@@ -463,7 +500,6 @@ public class penjualanDao {
         return hasil;
     }
 
-
     public static boolean cekFaktur(Connection conn, String kode) {
         boolean hasil = false;
         try {
@@ -480,7 +516,6 @@ public class penjualanDao {
 
         return hasil;
     }
-    
 
     public static class triggerPenjualan implements Trigger {
 
@@ -507,7 +542,7 @@ public class penjualanDao {
                     Statement stat = conn.createStatement();
                     List<rincipenjualan> list = rincipenjualanDao.getAllDetails(conn, Integer.parseInt(oldRow[0].toString()));
                     for (rincipenjualan rp : list) {
-                        if(rp.getIDDO()>0){
+                        if (rp.getIDDO() > 0) {
                             DO d = DODao.getDetails(conn, rp.getIDDO());
                             d.setSTATUS("A");
                             DODao.updateDO(conn, d);
