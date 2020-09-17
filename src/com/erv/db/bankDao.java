@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author erwadi
+ * @author JAVARIE-SOFT
  */
 public class bankDao {
 
