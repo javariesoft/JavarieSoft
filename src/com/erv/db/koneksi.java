@@ -23,7 +23,7 @@ import org.h2.tools.Backup;
  */
 public class koneksi {
 
-    //private static String urlJ = "jdbc:h2:tcp://localhost/~/dbalkesmrta";
+//    private static String urlJ = "jdbc:h2:tcp://localhost/~/dbalkesmrta";
 //    public static String IP="192.168.1.5:9092";
     public static String IP="localhost";
     private static int maxConnections = 25;
@@ -31,8 +31,8 @@ public class koneksi {
     private static String urlJ = "jdbc:h2:tcp://"+IP+"/~/dbalkesmrta";
     private static String urlM = "jdbc:h2:mem:";
     private static String username = "sa";
-    private static String password = "b6587937d3b03f7f829c5e667bb8a1e5"; //91
-//    private static String password = "f5c3919cbc26f811462a693676c40559"; //02
+//    private static String password = "b6587937d3b03f7f829c5e667bb8a1e5"; //91
+    private static String password = "f5c3919cbc26f811462a693676c40559"; //02
     //public static String IP = "192.168.1.5:9092";
     
     public static String pwstemp;
@@ -82,7 +82,7 @@ public class koneksi {
 //    }
     public static Connection getKoneksiJ() throws SQLException {
         System.out.println(getStatus());
-        System.out.println("Koneksi DB Alkes");
+        System.out.println("Connected to PT.Miranti Adilha");
         if (poolMgr.getActiveConnections() >= maxConnections) {
             poolMgr.dispose();
             createPoolKoneksi();

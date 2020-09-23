@@ -107,6 +107,40 @@ public class NofakDao {
         return nofak;
     }
     
+    public static boolean cekNoFakturAda(Connection con, int nfak) throws SQLException {
+        boolean hasil = false;
+        try {
+        String sql = "select * from nofak where nofak="+nfak+"";
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery(sql);
+//        Nofak nofak = null;
+            if (rs.next()) {
+                if (rs.getString(2) != null) {
+                    hasil = true;
+                }
+            }
+        } catch (Exception e) {
+        }
+        return hasil;
+    }
+    
+    public static boolean cekAktivasiNoFaktur(Connection con, int nfak) throws SQLException {
+        boolean hasil = false;
+        try {
+        String sql = "select * from nofak where nofak="+nfak+"";
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery(sql);
+//        Nofak nofak = null;
+            if (rs.next()) {
+                if (rs.getString(2) != null) {
+                    hasil = true;
+                }
+            }
+        } catch (Exception e) {
+        }
+        return hasil;
+    }
+    
     public static Nofak getNofakId(Connection con, int id) throws SQLException {
         String sql = "select * from nofak where id="+id+"";
         Statement stat = con.createStatement();
