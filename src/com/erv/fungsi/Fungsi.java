@@ -223,6 +223,26 @@ public class Fungsi {
         return hasil;
     }
 
+    public static double getDebet(Connection conn, String kodeakun, int tahun) {
+        double hasil = 0;
+        String sql = "SELECT sum(RINCIJURNAL.DEBET) AS DEBET "
+                + "FROM JURNAL INNER JOIN RINCIJURNAL ON JURNAL.ID = RINCIJURNAL.KODEJURNAL "
+                + "WHERE RINCIJURNAL.KODEPERKIRAAN LIKE '" + kodeakun + "%' AND  YEAR(JURNAL.TANGGAL) = " + tahun + "";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                hasil = rs.getDouble(1);
+            }
+            rs.close();
+            stat.close();
+        } catch (SQLException ex) {
+            System.out.print(ex.toString());
+        }
+        return hasil;
+    }
+
+    
     public static double getDebetTanggal(Connection conn, String kodeakun, String tanggal) {
         double hasil = 0;
         String t[] = Util.split(tanggal, "-");
@@ -265,6 +285,27 @@ public class Fungsi {
         return hasil;
     }
 
+    public static double getKredit(Connection conn, String kodeakun, int tahun) {
+        double hasil = 0;
+        String sql = "SELECT sum(RINCIJURNAL.KREDIT) AS KREDIT "
+                + "FROM JURNAL INNER JOIN RINCIJURNAL ON JURNAL.ID = RINCIJURNAL.KODEJURNAL "
+                + "WHERE RINCIJURNAL.KODEPERKIRAAN LIKE '" + kodeakun + "%' AND YEAR(JURNAL.TANGGAL) = " + tahun + "";
+        try {
+            Statement stat = conn.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                hasil = rs.getDouble(1);
+            }
+            rs.close();
+            stat.close();
+        } catch (SQLException ex) {
+            System.out.print(ex.toString());
+        }
+
+        return hasil;
+    }
+
+    
     public static double getKreditTanggal(Connection conn, String kodeakun, String tanggal) {
         double hasil = 0;
         String t[] = Util.split(tanggal, "-");
@@ -639,6 +680,24 @@ public class Fungsi {
         return hasil;
     }
 
+    public static double getLaba(Connection conn, int tahun) {
+        double hasil = 0.0;
+        try {
+            Statement stat = conn.createStatement();
+            String sql = "select (getKredit('4'," + tahun + ") - getDebet('4'," + tahun + ") ) \n"
+                    + "- ( getDebet('5'," + tahun + ") - getKredit('5'," + tahun + ") )\n"
+                    + "- ( getDebet('6'," + tahun + ") - getKredit('6'," + tahun + ") )";
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                hasil = rs.getDouble(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Fungsi.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return hasil;
+    }
+
+    
     public static double getPembelian(Connection conn, int bulan, int tahun) {
         double hasil = 0;
         String sql = "SELECT\n"
@@ -782,6 +841,17 @@ public class Fungsi {
         }
         if (akun.substring(0, 1).equals("6")) {
             hasil = getDebet(conn, akun, bulan, tahun) - getKredit(conn, akun, bulan, tahun);
+        }
+        return hasil;
+    }
+    
+    public static double getSaldoLR(Connection conn, String akun, int tahun) {
+        double hasil = 0.0;
+        if (akun.substring(0, 1).equals("5")) {
+            hasil = getDebet(conn, akun, tahun) - getKredit(conn, akun, tahun);
+        }
+        if (akun.substring(0, 1).equals("6")) {
+            hasil = getDebet(conn, akun, tahun) - getKredit(conn, akun, tahun);
         }
         return hasil;
     }

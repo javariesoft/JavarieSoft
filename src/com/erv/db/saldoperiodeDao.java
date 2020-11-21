@@ -33,27 +33,12 @@ public class saldoperiodeDao {
     }
 
     public static boolean updateSALDOPERIODE(Connection con, saldoperiode s) throws SQLException {
-        String sql = "SELECT * FROM SALDOPERIODE WHERE PERIODE = ?";
-        PreparedStatement statement = con.prepareStatement(sql,
-                ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        statement.setString(1, s.getPERIODE());
-        ResultSet entry = statement.executeQuery();
-        entry.last();
-        int rows = entry.getRow();
-        entry.beforeFirst();
-        if (rows == 0) {
-            entry.close();
-            statement.close();
-            return false;
-        }
-        entry.next();
-        if (s.getKODEAKUN() != null) {
-            entry.updateString("KODEAKUN", s.getKODEAKUN());
-        }
-        entry.updateDouble("SALDO", s.getSALDO());
-
-        entry.updateRow();
-        entry.close();
+        String sql = "update SALDOPERIODE set saldo = ? WHERE PERIODE = ? and KODEAKUN = ?";
+        PreparedStatement statement = con.prepareStatement(sql);
+        statement.setDouble(1, s.getSALDO());
+        statement.setString(2, s.getPERIODE());
+        statement.setString(3, s.getKODEAKUN()); 
+        statement.executeUpdate();
         statement.close();
         return true;
     }
