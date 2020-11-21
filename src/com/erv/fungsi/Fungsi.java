@@ -844,6 +844,17 @@ public class Fungsi {
         }
         return hasil;
     }
+    
+    public static double getSaldoLR(Connection conn, String akun, int tahun) {
+        double hasil = 0.0;
+        if (akun.substring(0, 1).equals("5")) {
+            hasil = getDebet(conn, akun, tahun) - getKredit(conn, akun, tahun);
+        }
+        if (akun.substring(0, 1).equals("6")) {
+            hasil = getDebet(conn, akun, tahun) - getKredit(conn, akun, tahun);
+        }
+        return hasil;
+    }
 
     public static int[] getKonversiSatuan(int jumlah, int jum1, int jum2) {
         int[] a = new int[3];
