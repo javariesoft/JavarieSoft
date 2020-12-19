@@ -13,12 +13,13 @@ import java.sql.Date;
 public class stok {
     private int IDPENJUALAN;
     private String KODEBARANG;
-    //private Date TANGGAL;
     private String TANGGAL;
     private int IN;
     private int OUT;
     private String KODETRANS;
     private String KODEBATCH;
+    private Date CREATEAT;
+    private Date UPDATEAT;
     
     public int getIDPENJUALAN() {
         return IDPENJUALAN;
@@ -66,6 +67,22 @@ public class stok {
 
     public void setKODETRANS(String KODETRANS) {
         this.KODETRANS = KODETRANS;
+    }
+
+    public Date getCREATEAT() {
+        return CREATEAT;
+    }
+
+    public void setCREATEAT(Date CREATEAT) {
+        this.CREATEAT = CREATEAT;
+    }
+
+    public Date getUPDATEAT() {
+        return UPDATEAT;
+    }
+
+    public void setUPDATEAT(Date UPDATEAT) {
+        this.UPDATEAT = UPDATEAT;
     }
 
     public String getKODEBATCH() {
