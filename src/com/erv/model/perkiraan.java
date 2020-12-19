@@ -13,6 +13,7 @@ public class perkiraan {
     private String NAMAPERKIRAAN;
     private int GRUP;
     private String TIPE;
+    private int STATUSAKTIF;
 
     public int getGRUP() {
         return GRUP;
@@ -44,6 +45,14 @@ public class perkiraan {
 
     public void setTIPE(String TIPE) {
         this.TIPE = TIPE;
+    }
+
+    public int getSTATUSAKTIF() {
+        return STATUSAKTIF;
+    }
+
+    public void setSTATUSAKTIF(int STATUSAKTIF) {
+        this.STATUSAKTIF = STATUSAKTIF;
     }
     
 }

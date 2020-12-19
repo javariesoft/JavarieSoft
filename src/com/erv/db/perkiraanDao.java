@@ -19,13 +19,14 @@ import java.util.List;
 public class perkiraanDao {
 
     public boolean insert(Connection con, perkiraan bb) throws SQLException {
-        String sql = "insert into PERKIRAAN values (?,?,?,?)";
+        String sql = "insert into PERKIRAAN values (?,?,?,?,?)";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
         pstmt.setString(1, bb.getKODEPERKIRAAN());
         pstmt.setString(2, bb.getNAMAPERKIRAAN());
         pstmt.setInt(3, bb.getGRUP());
         pstmt.setString(4, bb.getTIPE());
+        pstmt.setInt(5,bb.getSTATUSAKTIF());
         boolean i = pstmt.execute();
         pstmt.close();
         return i;
@@ -41,6 +42,7 @@ public class perkiraanDao {
             ubean.setNAMAPERKIRAAN(rs.getString(2));
             ubean.setGRUP(rs.getInt(3));
             ubean.setTIPE(rs.getString(4));
+            ubean.setSTATUSAKTIF(rs.getInt(5)); 
             list.add(ubean);
         }
         rs.close();
@@ -59,6 +61,7 @@ public class perkiraanDao {
             ubean.setNAMAPERKIRAAN(rs.getString(2));
             ubean.setGRUP(rs.getInt(3));
             ubean.setTIPE(rs.getString(4));
+            ubean.setSTATUSAKTIF(rs.getInt(5)); 
         }
         rs.close();
         pstmt.close();
@@ -66,13 +69,15 @@ public class perkiraanDao {
     }
 
     public boolean update(Connection con, perkiraan bb) throws SQLException {
-        String sql = "update PERKIRAAN set NAMAPERKIRAAN=?,GRUP=?,TIPE=? where KODEPERKIRAAN=?";
+        String sql = "update PERKIRAAN set NAMAPERKIRAAN=?,"
+                + "GRUP=?,TIPE=?,STATUSAKTIF=? where KODEPERKIRAAN=?";
         PreparedStatement pstmt = con.prepareStatement(sql);
         //set values to prepared statement object by getting values from bean object
-        pstmt.setString(4, bb.getKODEPERKIRAAN());
+        pstmt.setString(5, bb.getKODEPERKIRAAN());
         pstmt.setString(1, bb.getNAMAPERKIRAAN());
         pstmt.setInt(2, bb.getGRUP());
         pstmt.setString(3, bb.getTIPE());
+        pstmt.setInt(4,bb.getSTATUSAKTIF());
         boolean i = pstmt.execute();
         pstmt.close();
         return i;
