@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,5 +91,17 @@ public class perkiraanDao {
         pstmt.setString(1, id);
         pstmt.executeUpdate();
         pstmt.close();
+    }
+    
+    public static boolean cekPerkiraan(Connection con, String kode) throws SQLException{
+        String sql="select * from RINCIJURNAL rj inner join JURNAL j on rj.KODEJURNAL = j.id  "
+                + "where tanggal>='2020-01-01' and KODEPERKIRAAN like '"+kode+"%' "
+                + "";
+        Statement ps = con.createStatement();
+        ResultSet rs = ps.executeQuery(sql);
+        if(rs.next()){
+            return true;
+        }
+        return false;
     }
 }

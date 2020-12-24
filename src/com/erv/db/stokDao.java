@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.h2.api.Trigger;
@@ -23,7 +25,9 @@ import org.h2.api.Trigger;
 public class stokDao {
 
     public static boolean insertIntoSTOK(Connection con, stok s) throws SQLException {
-        String sql = "INSERT INTO STOK VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO STOK VALUES("
+                + "?,?,?,?,?,"
+                + "?,?,?,?)";
         PreparedStatement statement = con.prepareStatement(sql);
         statement.setInt(1, s.getIDPENJUALAN());
         statement.setString(2, s.getKODEBARANG());
@@ -32,6 +36,8 @@ public class stokDao {
         statement.setInt(5, s.getOUT());
         statement.setString(6, s.getKODETRANS());
         statement.setString(7, s.getKODEBATCH());
+        statement.setTimestamp(8, new Timestamp(new Date().getTime())); 
+        statement.setTimestamp(9, new Timestamp(new Date().getTime()));
         boolean i = statement.execute();
         statement.close();
         return !i;
@@ -61,6 +67,7 @@ public class stokDao {
         }
         entry.updateInt("IN", s.getIN());
         entry.updateInt("OUT", s.getOUT());
+        entry.updateTimestamp("UPDATEAT", new Timestamp(new Date().getTime()));
         entry.updateRow();
         entry.close();
         statement.close();
