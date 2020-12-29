@@ -102,6 +102,25 @@ public class piutangbayarDao {
         return hasil;
     }
     
+    public static piutangbayar getPiutangBayar(Connection con, String kode) throws SQLException{
+        String sql = "select * from piutangbayar where KODEPIUTANGBAYAR=?";
+        PreparedStatement ps= con.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        piutangbayar p = null; 
+        if(rs.next()){
+            p = new piutangbayar();
+            p.setID(rs.getInt("ID"));
+            p.setKODEPIUTANGBAYAR(rs.getString("KODEPIUTANGBAYAR"));
+            p.setIDPIUTANG(rs.getInt("IDPIUTANG"));
+            p.setTANGGAL(rs.getString("TANGGAL"));
+            p.setJUMLAH(rs.getDouble("JUMLAH"));
+            p.setREF(rs.getString("REF"));
+        }
+        rs.close();
+        ps.close();
+        return p;
+    }
+    
     public static List<piutangbayar> getPiutangBayarIDPiutang(Connection c, int idpiutang) throws SQLException{
         String sql= "select * from piutangbayar where idpiutang=?";
         PreparedStatement ps = c.prepareStatement(sql);
