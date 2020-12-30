@@ -9,11 +9,16 @@ package com.erv.model;
  * @author erwadi
  */
 public class perkiraan {
+
     private String KODEPERKIRAAN;
     private String NAMAPERKIRAAN;
     private int GRUP;
     private String TIPE;
     private int STATUSAKTIF;
+
+    public perkiraan() {
+        STATUSAKTIF = 0;
+    }
 
     public int getGRUP() {
         return GRUP;
@@ -54,5 +59,5 @@ public class perkiraan {
     public void setSTATUSAKTIF(int STATUSAKTIF) {
         this.STATUSAKTIF = STATUSAKTIF;
     }
-    
+
 }
