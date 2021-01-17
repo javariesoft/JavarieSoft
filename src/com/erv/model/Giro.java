@@ -6,6 +6,8 @@
 
 package com.erv.model;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author ervan
@@ -23,6 +25,8 @@ public class Giro {
     private String BANKASAL;
     private int IDBANK;
     private bank bk;
+    private Timestamp CREATE_AT;
+    private Timestamp UPDATE_AT;
 
     public Giro() {
         this.NOMORGIRO = "";
@@ -133,5 +137,23 @@ public class Giro {
     public void setBk(bank bk) {
         this.bk = bk;
     }
+
+    public Timestamp getCREATE_AT() {
+        return CREATE_AT;
+    }
+
+    public void setCREATE_AT(Timestamp CREATE_AT) {
+        this.CREATE_AT = CREATE_AT;
+    }
+
+    public Timestamp getUPDATE_AT() {
+        return UPDATE_AT;
+    }
+
+    public void setUPDATE_AT(Timestamp UPDATE_AT) {
+        this.UPDATE_AT = UPDATE_AT;
+    }
+    
+    
     
 }

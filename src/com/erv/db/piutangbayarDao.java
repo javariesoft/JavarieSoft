@@ -81,7 +81,7 @@ public class piutangbayarDao {
         statement.executeUpdate();
         statement.close();
     }
-    
+
     public static void deleteFromPIUTANGBAYAR(Connection con, String ref) throws SQLException {
         String sql = "DELETE FROM PIUTANGBAYAR WHERE REF = ?";
         PreparedStatement statement = con.prepareStatement(sql);
@@ -101,13 +101,13 @@ public class piutangbayarDao {
         }
         return hasil;
     }
-    
-    public static piutangbayar getPiutangBayar(Connection con, String kode) throws SQLException{
+
+    public static piutangbayar getPiutangBayar(Connection con, String kode) throws SQLException {
         String sql = "select * from piutangbayar where KODEPIUTANGBAYAR=?";
-        PreparedStatement ps= con.prepareStatement(sql);
+        PreparedStatement ps = con.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
-        piutangbayar p = null; 
-        if(rs.next()){
+        piutangbayar p = null;
+        if (rs.next()) {
             p = new piutangbayar();
             p.setID(rs.getInt("ID"));
             p.setKODEPIUTANGBAYAR(rs.getString("KODEPIUTANGBAYAR"));
@@ -120,15 +120,15 @@ public class piutangbayarDao {
         ps.close();
         return p;
     }
-    
-    public static List<piutangbayar> getPiutangBayarIDPiutang(Connection c, int idpiutang) throws SQLException{
-        String sql= "select * from piutangbayar where idpiutang=?";
+
+    public static List<piutangbayar> getPiutangBayarIDPiutang(Connection c, int idpiutang) throws SQLException {
+        String sql = "select * from piutangbayar where idpiutang=?";
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, idpiutang);
         List<piutangbayar> ls = new ArrayList<piutangbayar>();
         piutangbayar pb = null;
         ResultSet rs = ps.executeQuery();
-        while(rs.next()){
+        while (rs.next()) {
             pb = new piutangbayar();
             pb.setID(rs.getInt("ID"));
             pb.setKODEPIUTANGBAYAR(rs.getString("KODEPIUTANGBAYAR"));
@@ -143,12 +143,12 @@ public class piutangbayarDao {
 
     public static String getKodePiutangBayar(Connection con) {
         String hasil = "";
-        int jum=1;
+        int jum = 1;
         String tgl = com.erv.function.Util.toDateStringSql(new Date());
 //        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
 //                + "where substring(kodepiutangbayar,4,2)='" + Util.getbln(tgl) + "' "
 //                + "and substring(kodepiutangbayar,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
-        
+
         String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
                 + "where substring(kodepiutangbayar,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodepiutangbayar,2)='PB'";
         try {
@@ -167,15 +167,15 @@ public class piutangbayarDao {
         }
         return hasil;
     }
-    
+
     public static String getKodePiutangBayarRef(Connection con) {
         String hasil = "";
-        int jum=1;
+        int jum = 1;
         String tgl = com.erv.function.Util.toDateStringSql(new Date());
 //        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
 //                + "where substring(kodepiutangbayar,4,2)='" + Util.getbln(tgl) + "' "
 //                + "and substring(kodepiutangbayar,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
-        
+
         String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
                 + "where substring(kodepiutangbayar,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodepiutangbayar,2)='RP'";
         try {
@@ -194,7 +194,55 @@ public class piutangbayarDao {
         }
         return hasil;
     }
-    
+
+    public static String getKodePiutangBayarGiro(Connection con) {
+        String hasil = "";
+        int jum = 1;
+        String tgl = com.erv.function.Util.toDateStringSql(new Date());
+//        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
+//                + "where substring(kodepiutangbayar,4,2)='" + Util.getbln(tgl) + "' "
+//                + "and substring(kodepiutangbayar,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
+
+        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
+                + "where substring(kodepiutangbayar,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodepiutangbayar,2)='GM'";
+        try {
+            Statement stat = con.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                if (rs.getString(1) != null) {
+                    jum = rs.getInt(1) + 1;
+                }
+            }
+            hasil = "GM." + com.erv.function.Util.getthn(tgl).substring(2, 4) + new PrintfFormat("%04d").sprintf(jum);
+            rs.close();
+            stat.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return hasil;
+    }
+
+    public static List<piutangbayar> getPiutangBayarRef(Connection con, String ref) throws SQLException {
+        String sql = "select * from PIUTANGBAYAR where REF = ?"
+                + "";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, ref);
+        List<piutangbayar> ls = new ArrayList<>();
+        ResultSet rs = ps.executeQuery();
+        piutangbayar pb;
+        while (rs.next()) {
+            pb = new piutangbayar();
+            pb.setID(rs.getInt("ID"));
+            pb.setKODEPIUTANGBAYAR(rs.getString("KODEPIUTANGBAYAR"));
+            pb.setIDPIUTANG(rs.getInt("IDPIUTANG"));
+            pb.setTANGGAL(rs.getString("TANGGAL"));
+            pb.setJUMLAH(rs.getDouble("JUMLAH"));
+            pb.setREF(rs.getString("REF"));
+            ls.add(pb);
+        }
+        return ls;
+    }
+
     public static class triggerPiutangBayar implements Trigger {
 
         public void init(Connection conn, String schemaName, String triggerName, String tableName, boolean before, int type) {
@@ -217,13 +265,13 @@ public class piutangbayarDao {
             if (newRow != null && oldRow == null) {
             } else if (newRow == null && oldRow != null) {
                 Statement stat = conn.createStatement();
-                stat.execute("update PIUTANG set STATUS='1' where ID="+oldRow[2].toString()+"");
-                if(oldRow[5].toString().equals("0")){
+                stat.execute("update PIUTANG set STATUS='1' where ID=" + oldRow[2].toString() + "");
+                if (oldRow[5].toString().equals("0")) {
                     stat.execute("delete from JURNAL where KODEJURNAL='" + oldRow[1].toString() + "'");
-                }else{
+                } else {
                     stat.execute("delete from JURNAL where KODEJURNAL='" + oldRow[5].toString() + "'");
                 }
-                
+
                 System.out.println("Delete Piutang Bayar, Jurnal");
             }
         }

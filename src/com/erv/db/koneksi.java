@@ -31,8 +31,8 @@ public class koneksi {
     private static String urlJ = "jdbc:h2:tcp://"+IP+"/~/dbalkesmrta2020";
     private static String urlM = "jdbc:h2:mem:";
     private static String username = "sa";
-//    private static String password = "b6587937d3b03f7f829c5e667bb8a1e5"; //91
-    private static String password = "f5c3919cbc26f811462a693676c40559"; //02
+    private static String password = "a38b950762cda39e0e2dee6962ac4279"; //91
+    //private static String password = "f5c3919cbc26f811462a693676c40559"; //02
     //public static String IP = "192.168.1.5:9092";
     
     public static String pwstemp;

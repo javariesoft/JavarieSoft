@@ -221,6 +221,7 @@ public class pelangganDao {
             pelanggan ubean = new pelanggan();
             ubean.setKODEPELANGGAN(rs.getString(1));
             ubean.setNAMA(rs.getString(2));
+            ubean.setALAMAT(rs.getString("ALAMAT"));
             list.add(ubean);
         }
         rs.close();

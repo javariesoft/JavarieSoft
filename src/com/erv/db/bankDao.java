@@ -20,7 +20,7 @@ import java.util.List;
 public class bankDao {
 
     public static boolean insertIntoBANK(Connection con, bank b) throws SQLException {
-        
+
         String sql = "INSERT INTO BANK "
                 + "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement statement = con.prepareStatement(sql);
@@ -77,39 +77,40 @@ public class bankDao {
         statement.executeUpdate();
         statement.close();
     }
-    public static int getID(Connection con) throws SQLException{
-        int hasil=1;
+
+    public static int getID(Connection con) throws SQLException {
+        int hasil = 1;
         PreparedStatement pstmt = con.prepareStatement("select max(IDBANK) from BANK");
-        ResultSet rs=pstmt.executeQuery();
-        if(rs.next()){
-            if(rs.getString(1)!=null){
-                hasil=rs.getInt(1)+1;
+        ResultSet rs = pstmt.executeQuery();
+        if (rs.next()) {
+            if (rs.getString(1) != null) {
+                hasil = rs.getInt(1) + 1;
             }
         }
         rs.close();
         pstmt.close();
         return hasil;
     }
-    public static String getAkun(Connection con){
-        String hasil="";
+
+    public static String getAkun(Connection con) {
+        String hasil = "";
         String tgl = com.erv.function.Util.toDateStringSql(new Date());
         try {
             String kode = settingDao.getAkun(con, "BANK");
-            hasil=kode+"."+getID(con);
+            hasil = kode + "." + getID(con);
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
         return hasil;
     }
-     public static bank getDetails(Connection con, int id)throws SQLException, ClassNotFoundException
-    {
-       //here we will write code to get a single record from database
+
+    public static bank getDetails(Connection con, int id) throws SQLException, ClassNotFoundException {
+        //here we will write code to get a single record from database
         PreparedStatement pstmt = con.prepareStatement("select * from BANK where IDBANK=?");
         pstmt.setInt(1, id);
         ResultSet rs = pstmt.executeQuery();
         bank ubean = new bank();
-        while(rs.next())
-        {
+        while (rs.next()) {
             ubean.setIDBANK(rs.getInt(1));
             ubean.setNAMABANK(rs.getString(2));
             ubean.setKODEAKUN(rs.getString(3));
@@ -120,14 +121,12 @@ public class bankDao {
         pstmt.close();
         return ubean;
     }
-     
-     public static List getAlldetails(Connection con)throws SQLException
-    {
+
+    public static List getAlldetails(Connection con) throws SQLException {
         PreparedStatement pstmt = con.prepareStatement("select * from bank");
         ResultSet rs = pstmt.executeQuery();
         List list = new ArrayList();
-        while(rs.next())
-        {
+        while (rs.next()) {
             bank ubean = new bank();
             ubean.setIDBANK(rs.getInt(1));
             ubean.setNAMABANK(rs.getString(2));

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,12 @@ public class GiroDao {
             + "                  STATUS,\n"
             + "                  KODEPELANGGAN,\n"
             + "                  BANKASAL,\n"
-            + "                  IDBANK) values(?,?,?,?,?,?,?,?,?)";
+            + "                  IDBANK,"
+            + "                  CREATE_AT,"
+            + "                  UPDATE_AT) values("
+            + "?,?,?,?,?,"
+            + "?,?,?,?,?,"
+            + "?)";
     private final String Update = "UPDATE GIRO SET \n"
             + "    NOMORGIRO = ?,\n"
             + "    TGLGIRO = ?,\n"
@@ -50,7 +56,9 @@ public class GiroDao {
             + "    STATUS = ?,\n"
             + "    KODEPELANGGAN = ?,\n"
             + "    BANKASAL = ?,\n"
-            + "    IDBANK = ? where ID=?;";
+            + "    IDBANK = ?,"
+            + "    UPDATE_AT = ? "
+            + "where ID=?;";
     private final String delete = "delete from giro where ID=?";
     private final String getByID = "select * from giro where ID=?";
     private final String selectAll = "select * from giro where id<>0";
@@ -73,6 +81,8 @@ public class GiroDao {
             statement.setString(7, c.getKODEPELANGGAN());
             statement.setString(8, c.getBANKASAL());
             statement.setInt(9, c.getIDBANK());
+            statement.setTimestamp(10, new Timestamp(new Date().getTime()));
+            statement.setTimestamp(11, new Timestamp(new Date().getTime()));
             statement.executeUpdate();
             ResultSet result = statement.getGeneratedKeys();
             if (result.next()) {
@@ -113,7 +123,8 @@ public class GiroDao {
             statement.setString(7, c.getKODEPELANGGAN());
             statement.setString(8, c.getBANKASAL());
             statement.setInt(9, c.getIDBANK());
-            statement.setInt(10, c.getID());
+            statement.setTimestamp(10, new Timestamp(new Date().getTime()));
+            statement.setInt(11, c.getID());
             statement.executeUpdate();
             connection.commit();
         } catch (SQLException ex) {
@@ -189,6 +200,9 @@ public class GiroDao {
                 bk = bankDao.getDetails(connection, rs.getInt(10));
                 giro.setPlg(plg);
                 giro.setBk(bk);
+                giro.setCREATE_AT(rs.getTimestamp("CREATE_AT"));
+                giro.setUPDATE_AT(rs.getTimestamp("UPDATE_AT"));
+                
             } else {
                 throw new GiroException("Giro dengan Kode " + id + " tidak ditemukan");
             }
@@ -237,6 +251,8 @@ public class GiroDao {
                 giro.setPlg(plg);
                 giro.setBk(bk);
                 list.add(giro);
+                giro.setCREATE_AT(rs.getTimestamp("CREATE_AT"));
+                giro.setUPDATE_AT(rs.getTimestamp("UPDATE_AT"));
             }
             return list;
         } catch (SQLException e) {
@@ -261,14 +277,14 @@ public class GiroDao {
             Statement stat = connection.createStatement();
             ResultSet rs = stat.executeQuery("select max(right(NOMORGIRO,4)) from GIRO "
                     + "where substring(NOMORGIRO,4,2)='" + Util.getbln(tgl) + "' "
-                    + "and substring(NOMORGIRO,6,2)='" + Util.getthn(tgl).substring(2,4) + "'"); 
+                    + "and substring(NOMORGIRO,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'");
             if (rs.next()) {
                 if (rs.getString(1) != null) {
                     jum = rs.getInt(1) + 1;
                 }
             }
             //GR.04160001
-            hasil ="GM." + Util.getbln(tgl) +""+com.erv.function.Util.getthn(tgl).substring(2, 4) + new PrintfFormat("%04d").sprintf(jum);
+            hasil = "GM." + Util.getbln(tgl) + "" + com.erv.function.Util.getthn(tgl).substring(2, 4) + new PrintfFormat("%04d").sprintf(jum);
             rs.close();
             stat.close();
         } catch (SQLException ex) {
@@ -277,7 +293,7 @@ public class GiroDao {
         return hasil;
     }
 
-    public void angsuranPiutang(Giro giro, String tglCair) throws GiroException {
+    public void angsuranPiutang(Giro giro, String tanggal) throws GiroException {
         Statement stat = null;
         Statement s = null;
         ResultSet rsPiutang = null;
@@ -301,20 +317,12 @@ public class GiroDao {
                         pb.setJUMLAH(rsPiutang.getDouble(5));
                         pb.setKODEPIUTANGBAYAR(piutangbayarDao.getKodePiutangBayar(connection));
                         pb.setREF(giro.getNOMORGIRO());
-                        pb.setTANGGAL(tglCair);
+                        pb.setTANGGAL(tanggal);
                         piutangbayarDao.insertIntoPIUTANGBAYAR(connection, pb);
                         totalGiro -= rsPiutang.getDouble(5);
                         piutang p = piutangDao.getDetails(connection, rsPiutang.getInt(1));
                         p.setSTATUS("0");
                         piutangDao.updatePIUTANG(connection, p);
-//                    jn = new jurnal();
-//                    jn.setID(jurnalDao.getIDJurnal(connection));
-//                    jn.setKODEJURNAL(pb.getKODEPIUTANGBAYAR());
-//                    jn.setTANGGAL(Util.toDateStringSql(new Date()));
-//                    jn.setDESKRIPSI("Terima Piutang Dari " + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getNAMA() + " Via Giro No " + giro.getNOMORGIRO());
-//                    jurnalDao.insertIntoJURNAL(connection, jn);
-//                    s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + bankDao.getDetails(connection, giro.getIDBANK()).getKODEAKUN() + "'," + rsPiutang.getDouble(5) + ",0,1)");
-//                    s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getKODEAKUN() + "',0," + rsPiutang.getDouble(5) + ",2)");
                     } else {
                         pb = new piutangbayar();
                         pb.setID(piutangbayarDao.getID(connection));
@@ -322,7 +330,7 @@ public class GiroDao {
                         pb.setJUMLAH(totalGiro);
                         pb.setKODEPIUTANGBAYAR(piutangbayarDao.getKodePiutangBayar(connection));
                         pb.setREF(giro.getNOMORGIRO());
-                        pb.setTANGGAL(tglCair);
+                        pb.setTANGGAL(tanggal);
                         piutangbayarDao.insertIntoPIUTANGBAYAR(connection, pb);
                         totalGiro = 0;
                         break;
@@ -341,10 +349,10 @@ public class GiroDao {
                 jn = new jurnal();
                 jn.setID(jurnalDao.getIDJurnal(connection));
                 jn.setKODEJURNAL(giro.getNOMORGIRO());
-                jn.setTANGGAL(tglCair);
+                jn.setTANGGAL(tanggal);
                 jn.setDESKRIPSI("Terima Piutang Dari " + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getNAMA() + " Via Giro No " + giro.getNOMORGIRO());
                 jurnalDao.insertIntoJURNAL(connection, jn);
-                s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + bankDao.getDetails(connection, giro.getIDBANK()).getKODEAKUN() + "'," + giro.getJUMLAH() + ",0,1,'')");
+                s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + settingDao.getAkun(connection, "PIUTANGGIRO") + "'," + giro.getJUMLAH() + ",0,1,'')");
                 s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getKODEAKUN() + "',0," + giro.getJUMLAH() + ",2,'')");
                 giro.setSTATUS(1);
                 update(giro);
@@ -355,7 +363,7 @@ public class GiroDao {
         } catch (SQLException ex) {
             try {
                 connection.rollback();
-                throw new GiroException("Rollback " +ex.getMessage());
+                throw new GiroException("Rollback " + ex.getMessage());
             } catch (SQLException ex1) {
                 Logger.getLogger(GiroDao.class.getName()).log(Level.SEVERE, null, ex1);
             }
@@ -383,10 +391,106 @@ public class GiroDao {
 
         }
     }
+
+    public void angsuranPiutang1(Giro giro, String tanggal) throws GiroException {
+        Statement stat = null;
+        Statement s = null;
+        ResultSet rsPiutang = null;
+        try {
+            String sql = "SELECT ID,KETERANGAN,NOFAKTUR,JUMLAH,JUMLAH - JUMLAHBAYAR as SISA,JATUHTEMPO,STATUS from VIEW_PIUTANG where IDPELANGGAN='" + giro.getKODEPELANGGAN() + "' AND STATUS='BELUM LUNAS' ORDER BY NOFAKTUR";
+            connection.createStatement().execute("set autocommit false");
+            stat = connection.createStatement();
+            s = connection.createStatement();
+            rsPiutang = stat.executeQuery(sql);
+            double totalGiro = giro.getJUMLAH();
+            piutangbayar pb;
+            jurnal jn;
+            boolean st = false;
+            while (rsPiutang.next()) {
+                st = true;
+                if (totalGiro != 0) {
+                    if (totalGiro >= rsPiutang.getDouble(5)) {
+                        pb = new piutangbayar();
+                        pb.setID(piutangbayarDao.getID(connection));
+                        pb.setIDPIUTANG(rsPiutang.getInt(1));
+                        pb.setJUMLAH(rsPiutang.getDouble(5));
+                        pb.setKODEPIUTANGBAYAR(piutangbayarDao.getKodePiutangBayar(connection));
+                        pb.setREF(giro.getNOMORGIRO());
+                        pb.setTANGGAL(tanggal);
+                        piutangbayarDao.insertIntoPIUTANGBAYAR(connection, pb);
+                        totalGiro -= rsPiutang.getDouble(5);
+                        piutang p = piutangDao.getDetails(connection, rsPiutang.getInt(1));
+                        p.setSTATUS("0");
+                        piutangDao.updatePIUTANG(connection, p);
+                    } else {
+                        pb = new piutangbayar();
+                        pb.setID(piutangbayarDao.getID(connection));
+                        pb.setIDPIUTANG(rsPiutang.getInt(1));
+                        pb.setJUMLAH(totalGiro);
+                        pb.setKODEPIUTANGBAYAR(piutangbayarDao.getKodePiutangBayar(connection));
+                        pb.setREF(giro.getNOMORGIRO());
+                        pb.setTANGGAL(tanggal);
+                        piutangbayarDao.insertIntoPIUTANGBAYAR(connection, pb);
+                        totalGiro = 0;
+                        break;
+//                    jn = new jurnal();
+//                    jn.setID(jurnalDao.getIDJurnal(connection));
+//                    jn.setKODEJURNAL(pb.getKODEPIUTANGBAYAR());
+//                    jn.setTANGGAL(Util.toDateStringSql(new Date()));
+//                    jn.setDESKRIPSI("Terima Piutang Dari " + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getNAMA() + " Via Giro No " + giro.getNOMORGIRO());
+//                    jurnalDao.insertIntoJURNAL(connection, jn);
+//                    s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + bankDao.getDetails(connection, giro.getIDBANK()).getKODEAKUN() + "'," + totalGiro + ",0,1)");
+//                    s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getKODEAKUN() + "',0," + totalGiro + ",2)");
+                    }
+                }
+            }
+            if (st) {
+                jn = new jurnal();
+                jn.setID(jurnalDao.getIDJurnal(connection));
+                jn.setKODEJURNAL(giro.getNOMORGIRO());
+                jn.setTANGGAL(tanggal);
+                jn.setDESKRIPSI("Terima Piutang Dari " + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getNAMA() + " Via Giro No " + giro.getNOMORGIRO());
+                jurnalDao.insertIntoJURNAL(connection, jn);
+                s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + settingDao.getAkun(connection, "PIUTANGGIRO") + "'," + giro.getJUMLAH() + ",0,1,'')");
+                s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + new pelangganDao(connection).getDetails(giro.getKODEPELANGGAN()).getKODEAKUN() + "',0," + giro.getJUMLAH() + ",2,'')");
+                giro.setSTATUS(1);
+                update(giro);
+                connection.commit();
+            } 
+        } catch (SQLException ex) {
+            try {
+                connection.rollback();
+                throw new GiroException("Rollback " + ex.getMessage());
+            } catch (SQLException ex1) {
+                Logger.getLogger(GiroDao.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        } catch (ClassNotFoundException ex) {
+            throw new GiroException(ex.getMessage());
+        } finally {
+            if (rsPiutang != null) {
+                try {
+                    rsPiutang.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (stat != null) {
+                try {
+                    stat.close();
+                } catch (SQLException ex) {
+                }
+            }
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (SQLException ex) {
+                }
+            }
+
+        }
+    }
+
     
-    
-    
-    public void close() throws SQLException{
+    public void close() throws SQLException {
         connection.close();
     }
 }
