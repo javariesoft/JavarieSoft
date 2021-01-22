@@ -92,6 +92,27 @@ public class hutangbayarDao {
         return ls;
     }
 
+    public static List<hutangbayar> getHutangBayarRef(Connection c, String ref) throws SQLException{
+        String sql= "select * from hutangbayar where ref=?";
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, ref);
+        List<hutangbayar> ls = new ArrayList<hutangbayar>();
+        hutangbayar hb; 
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            hb = new hutangbayar();
+            hb.setID(rs.getInt("ID"));
+            hb.setKODEHUTANGBAYAR(rs.getString("KODEHUTANGBAYAR"));
+            hb.setIDHUTANG(rs.getInt("IDHUTANG"));
+            hb.setTANGGAL(rs.getString("TANGGAL"));
+            hb.setJUMLAH(rs.getDouble("JUMLAH"));
+            hb.setREF(rs.getString("REF"));
+            ls.add(hb);
+        }
+        return ls;
+    }
+
+    
     public static void deleteFromHUTANGBAYAR(Connection con, int keyId) throws SQLException {
         String sql = "DELETE FROM HUTANGBAYAR WHERE ID = ?";
         PreparedStatement statement = con.prepareStatement(sql);
@@ -169,6 +190,33 @@ public class hutangbayarDao {
                 }
             }
             hasil = "RH." + com.erv.function.Util.getthn(tgl).substring(2,4) + new PrintfFormat("%04d").sprintf(jum);
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return hasil;
+    }
+    
+    public static String getKodeHutangBayarGiro(Connection con) {
+        String hasil = "";
+        int jum = 1;
+        String tgl = com.erv.function.Util.toDateStringSql(new Date());
+//        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
+//                + "where substring(kodepiutangbayar,4,2)='" + Util.getbln(tgl) + "' "
+//                + "and substring(kodepiutangbayar,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
+
+        String sql = "select max(right(kodepiutangbayar,4)) from piutangbayar "
+                + "where substring(kodepiutangbayar,4,2)='" + Util.getthn(tgl).substring(2, 4) + "' and left(kodepiutangbayar,2)='GK'";
+        try {
+            Statement stat = con.createStatement();
+            ResultSet rs = stat.executeQuery(sql);
+            if (rs.next()) {
+                if (rs.getString(1) != null) {
+                    jum = rs.getInt(1) + 1;
+                }
+            }
+            hasil = "GK." + com.erv.function.Util.getthn(tgl).substring(2, 4) + new PrintfFormat("%04d").sprintf(jum);
+            rs.close();
+            stat.close();
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }

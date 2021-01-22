@@ -7,6 +7,7 @@
 
 package com.erv.model;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /*
@@ -23,6 +24,8 @@ public class Girokeluar  {
     protected String kodesupplier;
     protected String idbank;
     protected String banktujuan;
+    protected Timestamp create_at;
+    protected Timestamp update_at;
 
     public int getId() {
         return id;
@@ -103,4 +106,22 @@ public class Girokeluar  {
     public void setBanktujuan(String banktujuan) {
         this.banktujuan = banktujuan;
     }
+
+    public Timestamp getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(Timestamp create_at) {
+        this.create_at = create_at;
+    }
+
+    public Timestamp getUpdate_at() {
+        return update_at;
+    }
+
+    public void setUpdate_at(Timestamp update_at) {
+        this.update_at = update_at;
+    }
+    
+    
 }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.ArrayList;
 import com.erv.model.*;
 import com.erv.model.dao.GirokeluarDAO;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,28 +32,34 @@ import java.util.logging.Logger;
  * This class provides methods to populate DB Table of GIROKELUAR
  */
 public class GirokeluarDAOImpl implements GirokeluarDAO {
+
     /* SQL to insert data */
 
     private Connection conn;
     private static final String SQL_INSERT
             = "INSERT INTO GIROKELUAR ("
-            + "NOMORGIRO, TGLGIRO, TGLJTEMPO, JUMLAH, NAMAPENERIMA, STATUS, "
-            + "KODESUPPLIER, IDBANK, BANKTUJUAN"
-            + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "NOMORGIRO, TGLGIRO, TGLJTEMPO, JUMLAH, NAMAPENERIMA, "
+            + "STATUS, KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT"
+            + ") VALUES ("
+            + "?, ?, ?, ?, ?, "
+            + "?, ?, ?, ?, ?,"
+            + "?)";
 
     /* SQL to select data */
     private static final String SQL_SELECT
             = "SELECT "
             + "ID, NOMORGIRO, TGLGIRO, TGLJTEMPO, JUMLAH, NAMAPENERIMA, STATUS, "
-            + "KODESUPPLIER, IDBANK, BANKTUJUAN "
+            + "KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT "
             + "FROM GIROKELUAR WHERE "
             + "ID = ?";
 
     /* SQL to update data */
     private static final String SQL_UPDATE
             = "UPDATE GIROKELUAR SET "
-            + "NOMORGIRO = ?, TGLGIRO = ?, TGLJTEMPO = ?, JUMLAH = ?, NAMAPENERIMA = ?, STATUS = ?, KODESUPPLIER = ?,  "
-            + "IDBANK = ?, BANKTUJUAN = ? "
+            + "NOMORGIRO = ?, TGLGIRO = ?, TGLJTEMPO = ?, "
+            + "JUMLAH = ?, NAMAPENERIMA = ?, STATUS = ?, "
+            + "KODESUPPLIER = ?,  IDBANK = ?, BANKTUJUAN = ?, "
+            + "UPDATE_AT = ? "
             + "WHERE "
             + "ID = ?";
 
@@ -75,7 +82,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
     public void create(Girokeluar bean) throws JavarieException {
         PreparedStatement ps = null;
         try {
-            conn.createStatement().execute("set autocommit false");
+            //conn.createStatement().execute("set autocommit false");
             ps = conn.prepareStatement(SQL_INSERT);
             //ps.setInt(1, bean.getId());
             ps.setString(1, bean.getNomorgiro());
@@ -95,19 +102,21 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             ps.setString(7, bean.getKodesupplier());
             ps.setString(8, bean.getIdbank());
             ps.setString(9, bean.getBanktujuan());
+            ps.setTimestamp(10, new Timestamp(new Date().getTime()));
+            ps.setTimestamp(11, new Timestamp(new Date().getTime()));
             ps.executeUpdate();
             ResultSet result = ps.getGeneratedKeys();
             if (result.next()) {
                 bean.setId(result.getInt(1));
             }
-            conn.commit();
+            //conn.commit();
         } catch (SQLException ex) {
             throw new JavarieException(ex.getMessage());
         } finally {
-            try {
-                conn.createStatement().execute("set autocommit true");
-            } catch (SQLException ex) {
-            }
+//            try {
+//                conn.createStatement().execute("set autocommit true");
+//            } catch (SQLException ex) {
+//            }
             close(ps);
         }
     }
@@ -150,7 +159,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
     public void update(Girokeluar bean) throws JavarieException {
         PreparedStatement ps = null;
         try {
-            conn.createStatement().execute("set autocommit false");
+            //conn.createStatement().execute("set autocommit false");
             ps = conn.prepareStatement(SQL_UPDATE);
             ps.setString(1, bean.getNomorgiro());
             if (bean.getTglgiro() != null) {
@@ -169,21 +178,22 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             ps.setString(7, bean.getKodesupplier());
             ps.setString(8, bean.getIdbank());
             ps.setString(9, bean.getBanktujuan());
-            ps.setInt(10, bean.getId());
+            ps.setTimestamp(10, new Timestamp(new Date().getTime()));
+            ps.setInt(11, bean.getId());
             ps.executeUpdate();
-            conn.commit();
+            //conn.commit();
         } catch (SQLException ex) {
-            try {
-                conn.rollback();
-            } catch (SQLException ex1) {
-
-            }
+//            try {
+//                conn.rollback();
+//            } catch (SQLException ex1) {
+//
+//            }
             throw new JavarieException(ex.getMessage());
         } finally {
-            try {
-                conn.createStatement().execute("set autocommit true");
-            } catch (SQLException ex) {
-            }
+//            try {
+//                conn.createStatement().execute("set autocommit true");
+//            } catch (SQLException ex) {
+//            }
             close(ps);
         }
     }
@@ -231,6 +241,8 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             bean.setKodesupplier(rs.getString("KODESUPPLIER"));
             bean.setIdbank(rs.getString("IDBANK"));
             bean.setBanktujuan(rs.getString("BANKTUJUAN"));
+            bean.setCreate_at(rs.getTimestamp("CREATE_AT"));
+            bean.setUpdate_at(rs.getTimestamp("UPDATE_AT"));
             results.add(bean);
         }
         return results;
@@ -273,13 +285,13 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             ResultSet rs = stat.executeQuery("select max(right(nomorgiro,4)) "
                     + "from GIROKELUAR "
                     + "where substring(NOMORGIRO,4,2)='" + Util.getbln(tgl) + "' "
-                    + "and substring(NOMORGIRO,6,2) = '"+Util.getthn(tgl).substring(2, 4)+"'");
+                    + "and substring(NOMORGIRO,6,2) = '" + Util.getthn(tgl).substring(2, 4) + "'");
             if (rs.next()) {
                 if (rs.getString(1) != null) {
                     jum = rs.getInt(1) + 1;
                 }
             }
-            hasil ="GK."+Util.getbln(tgl)+ com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
+            hasil = "GK." + Util.getbln(tgl) + com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
             rs.close();
             stat.close();
         } catch (SQLException ex) {
@@ -315,6 +327,8 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
                 bean.setKodesupplier(rs.getString("KODESUPPLIER"));
                 bean.setIdbank(rs.getString("IDBANK"));
                 bean.setBanktujuan(rs.getString("BANKTUJUAN"));
+                bean.setCreate_at(rs.getTimestamp("CREATE_AT"));
+                bean.setUpdate_at(rs.getTimestamp("UPDATE_AT"));
                 list.add(bean);
             }
             return list;
@@ -330,7 +344,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
         }
     }
 
-    public void angsuranHutang(Girokeluar girokeluar,String tglcair) throws JavarieException {
+    public void angsuranHutang(Girokeluar girokeluar, String tglcair) throws JavarieException {
         Statement stat = null;
         Statement s = null;
         ResultSet rsHutang = null;
@@ -378,7 +392,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
                 jn.setID(jurnalDao.getIDJurnal(conn));
                 jn.setKODEJURNAL(girokeluar.getNomorgiro());
                 jn.setTANGGAL(tglcair);
-                jn.setDESKRIPSI("Bayar Hutang Kpd " + supplierDao.getDetails(conn, girokeluar.getKodesupplier()).getNAMA() + " Via Giro No "+girokeluar.getNomorgiro());
+                jn.setDESKRIPSI("Bayar Hutang Kpd " + supplierDao.getDetails(conn, girokeluar.getKodesupplier()).getNAMA() + " Via Giro No " + girokeluar.getNomorgiro());
                 jurnalDao.insertIntoJURNAL(conn, jn);
                 s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + supplierDao.getDetails(conn, girokeluar.getKodesupplier()).getKODEAKUN() + "'," + girokeluar.getJumlah() + ",0,1,'')");
                 s.execute("insert into RINCIJURNAL values(" + jn.getID() + ",'" + girokeluar.getIdbank() + "',0," + girokeluar.getJumlah() + ",2,'')");
