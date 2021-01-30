@@ -26,6 +26,7 @@ public class Girokeluar  {
     protected String banktujuan;
     protected Timestamp create_at;
     protected Timestamp update_at;
+    protected String tglcair;
 
     public int getId() {
         return id;
@@ -121,6 +122,14 @@ public class Girokeluar  {
 
     public void setUpdate_at(Timestamp update_at) {
         this.update_at = update_at;
+    }
+
+    public String getTglcair() {
+        return tglcair;
+    }
+
+    public void setTglcair(String tglcair) {
+        this.tglcair = tglcair;
     }
     
     

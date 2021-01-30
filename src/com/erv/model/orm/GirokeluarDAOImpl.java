@@ -9,6 +9,7 @@ package com.erv.model.orm;
 import com.erv.db.hutangDao;
 import com.erv.db.hutangbayarDao;
 import com.erv.db.jurnalDao;
+import com.erv.db.koneksi;
 import com.erv.db.supplierDao;
 import com.erv.exception.JavarieException;
 import com.erv.function.PrintfFormat;
@@ -39,17 +40,17 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
     private static final String SQL_INSERT
             = "INSERT INTO GIROKELUAR ("
             + "NOMORGIRO, TGLGIRO, TGLJTEMPO, JUMLAH, NAMAPENERIMA, "
-            + "STATUS, KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT"
+            + "STATUS, KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT, TGLCAIR"
             + ") VALUES ("
             + "?, ?, ?, ?, ?, "
             + "?, ?, ?, ?, ?,"
-            + "?)";
+            + "?,?)";
 
     /* SQL to select data */
     private static final String SQL_SELECT
             = "SELECT "
             + "ID, NOMORGIRO, TGLGIRO, TGLJTEMPO, JUMLAH, NAMAPENERIMA, STATUS, "
-            + "KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT "
+            + "KODESUPPLIER, IDBANK, BANKTUJUAN, CREATE_AT, UPDATE_AT, TGLCAIR "
             + "FROM GIROKELUAR WHERE "
             + "ID = ?";
 
@@ -59,7 +60,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             + "NOMORGIRO = ?, TGLGIRO = ?, TGLJTEMPO = ?, "
             + "JUMLAH = ?, NAMAPENERIMA = ?, STATUS = ?, "
             + "KODESUPPLIER = ?,  IDBANK = ?, BANKTUJUAN = ?, "
-            + "UPDATE_AT = ? "
+            + "UPDATE_AT = ?, TGLCAIR = ? "
             + "WHERE "
             + "ID = ?";
 
@@ -75,6 +76,17 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
      * @param conn JDBC Connection.
      * @exception SQLException if something is wrong.
      */
+    
+    
+    
+    public GirokeluarDAOImpl() {
+        try {
+            conn = koneksi.getKoneksiJ();
+        } catch (SQLException ex) {
+            Logger.getLogger(GirokeluarDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public GirokeluarDAOImpl(Connection conn) {
         this.conn = conn;
     }
@@ -104,6 +116,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             ps.setString(9, bean.getBanktujuan());
             ps.setTimestamp(10, new Timestamp(new Date().getTime()));
             ps.setTimestamp(11, new Timestamp(new Date().getTime()));
+            ps.setString(12, bean.getTglcair());
             ps.executeUpdate();
             ResultSet result = ps.getGeneratedKeys();
             if (result.next()) {
@@ -179,7 +192,8 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             ps.setString(8, bean.getIdbank());
             ps.setString(9, bean.getBanktujuan());
             ps.setTimestamp(10, new Timestamp(new Date().getTime()));
-            ps.setInt(11, bean.getId());
+            ps.setString(11, bean.getTglcair());
+            ps.setInt(12, bean.getId());
             ps.executeUpdate();
             //conn.commit();
         } catch (SQLException ex) {
@@ -243,6 +257,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
             bean.setBanktujuan(rs.getString("BANKTUJUAN"));
             bean.setCreate_at(rs.getTimestamp("CREATE_AT"));
             bean.setUpdate_at(rs.getTimestamp("UPDATE_AT"));
+            bean.setTglcair(rs.getString("TGLCAIR"));
             results.add(bean);
         }
         return results;
@@ -329,6 +344,7 @@ public class GirokeluarDAOImpl implements GirokeluarDAO {
                 bean.setBanktujuan(rs.getString("BANKTUJUAN"));
                 bean.setCreate_at(rs.getTimestamp("CREATE_AT"));
                 bean.setUpdate_at(rs.getTimestamp("UPDATE_AT"));
+                bean.setTglcair(rs.getString("TGLCAIR"));
                 list.add(bean);
             }
             return list;

@@ -27,6 +27,7 @@ public class Giro {
     private bank bk;
     private Timestamp CREATE_AT;
     private Timestamp UPDATE_AT;
+    private String TGLCAIR;
 
     public Giro() {
         this.NOMORGIRO = "";
@@ -152,6 +153,14 @@ public class Giro {
 
     public void setUPDATE_AT(Timestamp UPDATE_AT) {
         this.UPDATE_AT = UPDATE_AT;
+    }
+
+    public String getTGLCAIR() {
+        return TGLCAIR;
+    }
+
+    public void setTGLCAIR(String TGLCAIR) {
+        this.TGLCAIR = TGLCAIR;
     }
     
     

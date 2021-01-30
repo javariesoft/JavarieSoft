@@ -43,25 +43,18 @@ public class GiroDao {
             + "                  BANKASAL,\n"
             + "                  IDBANK,"
             + "                  CREATE_AT,"
-            + "                  UPDATE_AT) values("
+            + "                  UPDATE_AT,"
+            + "                  TGLCAIR) values("
             + "?,?,?,?,?,"
             + "?,?,?,?,?,"
-            + "?)";
-    private final String Update = "UPDATE GIRO SET \n"
-            + "    NOMORGIRO = ?,\n"
-            + "    TGLGIRO = ?,\n"
-            + "    TGLJTEMPO = ?,\n"
-            + "    JUMLAH = ?,\n"
-            + "    NAMAPENERIMA = ?,\n"
-            + "    STATUS = ?,\n"
-            + "    KODEPELANGGAN = ?,\n"
-            + "    BANKASAL = ?,\n"
-            + "    IDBANK = ?,"
-            + "    UPDATE_AT = ? "
-            + "where ID=?;";
+            + "?,?)";
     private final String delete = "delete from giro where ID=?";
     private final String getByID = "select * from giro where ID=?";
     private final String selectAll = "select * from giro where id<>0";
+
+    public GiroDao() {
+        this.connection = null;
+    }
 
     public GiroDao(Connection connection) {
         this.connection = connection;
@@ -70,7 +63,7 @@ public class GiroDao {
     public void insert(Giro c) throws GiroException {
         PreparedStatement statement = null;
         try {
-            connection.createStatement().execute("set autocommit false");
+            //connection.createStatement().execute("set autocommit false");
             statement = connection.prepareStatement(Insert);
             statement.setString(1, c.getNOMORGIRO());
             statement.setString(2, c.getTGLGIRO());
@@ -83,23 +76,24 @@ public class GiroDao {
             statement.setInt(9, c.getIDBANK());
             statement.setTimestamp(10, new Timestamp(new Date().getTime()));
             statement.setTimestamp(11, new Timestamp(new Date().getTime()));
+            statement.setString(12, c.getTGLCAIR());
             statement.executeUpdate();
             ResultSet result = statement.getGeneratedKeys();
             if (result.next()) {
                 c.setID(result.getInt(1));
             }
-            connection.commit();
+            //connection.commit();
         } catch (SQLException ex) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-            }
+//            try {
+//                connection.rollback();
+//            } catch (SQLException ex1) {
+//            }
             throw new GiroException(ex.getMessage());
         } finally {
-            try {
-                connection.createStatement().execute("set autocommit true");
-            } catch (SQLException ex) {
-            }
+//            try {
+//                connection.createStatement().execute("set autocommit true");
+//            } catch (SQLException ex) {
+//            }
             if (statement != null) {
                 try {
                     statement.close();
@@ -110,9 +104,22 @@ public class GiroDao {
     }
 
     public void update(Giro c) throws GiroException {
+        String Update = "UPDATE GIRO SET \n"
+            + "    NOMORGIRO = ?,\n"
+            + "    TGLGIRO = ?,\n"
+            + "    TGLJTEMPO = ?,\n"
+            + "    JUMLAH = ?,\n"
+            + "    NAMAPENERIMA = ?,\n"
+            + "    STATUS = ?,\n"
+            + "    KODEPELANGGAN = ?,\n"
+            + "    BANKASAL = ?,\n"
+            + "    IDBANK = ?,"
+            + "    UPDATE_AT = ?, "
+            + "    TGLCAIR = ? "
+            + "where ID=?;";
         PreparedStatement statement = null;
         try {
-            connection.createStatement().execute("set autocommit false");
+            //connection.createStatement().execute("set autocommit false");
             statement = connection.prepareStatement(Update);
             statement.setString(1, c.getNOMORGIRO());
             statement.setString(2, c.getTGLGIRO());
@@ -124,20 +131,21 @@ public class GiroDao {
             statement.setString(8, c.getBANKASAL());
             statement.setInt(9, c.getIDBANK());
             statement.setTimestamp(10, new Timestamp(new Date().getTime()));
-            statement.setInt(11, c.getID());
+            statement.setString(11, c.getTGLCAIR());
+            statement.setInt(12, c.getID());
             statement.executeUpdate();
-            connection.commit();
+            //connection.commit();
         } catch (SQLException ex) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex1) {
-            }
+//            try {
+//                connection.rollback();
+//            } catch (SQLException ex1) {
+//            }
             throw new GiroException(ex.getMessage());
         } finally {
-            try {
-                connection.createStatement().execute("set autocommit true");
-            } catch (SQLException ex) {
-            }
+//            try {
+//                connection.createStatement().execute("set autocommit true");
+//            } catch (SQLException ex) {
+//            }
             if (statement != null) {
                 try {
                     statement.close();
@@ -202,6 +210,7 @@ public class GiroDao {
                 giro.setBk(bk);
                 giro.setCREATE_AT(rs.getTimestamp("CREATE_AT"));
                 giro.setUPDATE_AT(rs.getTimestamp("UPDATE_AT"));
+                giro.setTGLCAIR(rs.getString("TGLCAIR"));
                 
             } else {
                 throw new GiroException("Giro dengan Kode " + id + " tidak ditemukan");
@@ -253,6 +262,7 @@ public class GiroDao {
                 list.add(giro);
                 giro.setCREATE_AT(rs.getTimestamp("CREATE_AT"));
                 giro.setUPDATE_AT(rs.getTimestamp("UPDATE_AT"));
+                giro.setTGLCAIR(rs.getString("TGLCAIR"));
             }
             return list;
         } catch (SQLException e) {
