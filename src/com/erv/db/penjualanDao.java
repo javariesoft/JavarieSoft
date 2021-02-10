@@ -132,15 +132,15 @@ public class penjualanDao {
 //                    }
                 }
                 ////////////////////////////////////
-                if (bb.getBONUS().trim().equals("Bonus")) {
-                    Barangstok bs = BarangstokDao.getDetailKodeBarang(con, bb.getKODEBARANG());
-                    totalBonus += bb.getJUMLAHKECIL() * bs.getCOGS();
-                } else {
-                    totalJual += bb.getJUMLAH() * bb.getHARGA();
-                    totalDiskon += bb.getDISKON();
-                    totalHPP += bb.getJUMLAHKECIL() * bb.getCOGS();
-                    totalPPN += bb.getPPN();
-                }
+//                if (bb.getBONUS().trim().equals("Bonus")) {
+//                    Barangstok bs = BarangstokDao.getDetailKodeBarang(con, bb.getKODEBARANG());
+//                    totalBonus += bb.getJUMLAHKECIL() * bs.getCOGS();
+//                } else {
+                totalJual += bb.getJUMLAH() * bb.getHARGA();
+                totalDiskon += bb.getDISKON();
+                totalHPP += bb.getJUMLAHKECIL() * bb.getCOGS();
+                totalPPN += bb.getPPN();
+//                }
                 idrp++;
             }
             double totalDiskonSemua = totalDiskon + jual.getDISKON();
@@ -455,11 +455,11 @@ public class penjualanDao {
                 if (rs.getString(1) != null) {
                     jum = rs.getInt(1);
                     if (nofak != null) {
-                        if(nofak.getNofak() > jum){
+                        if (nofak.getNofak() > jum) {
                             jum = nofak.getNofak();
-                        }else{
+                        } else {
                             jum = rs.getInt(1) + 1;
-                        }    
+                        }
                     }
                 }
             }
