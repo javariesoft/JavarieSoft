@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.h2.api.Trigger;
 
 /**
@@ -129,14 +131,14 @@ public class returDao {
         return r;
     }
 
-    public static retur getReturIDJual(Connection c, int idjual) throws SQLException {
+    public static List<retur> getReturIDJual(Connection c, int idjual) throws SQLException {
         String sql = "select * from retur where idpenjualan=?";
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setInt(1, idjual);
         ResultSet rs = ps.executeQuery();
-        retur r = null;
+        List<retur> list = new ArrayList<>();
         while (rs.next()) {
-            r = new retur();
+            retur r = new retur();
             r.setID(rs.getInt(1));
             r.setKODERETUR(rs.getString(2));
             r.setTANGGAL(rs.getString(3));
@@ -151,11 +153,11 @@ public class returDao {
             r.setTOTALHPP(rs.getDouble(12));
             r.setRincireturList(rincireturDao.getRinciRetur(c, r.getID()));
             r.setJurnal(jurnalDao.getJurnalKode(c, r.getKODERETUR()));
+            list.add(r);
         }
-        return r;
+        return list;
     }
 
-    
     public static String setRetur(Connection conn) {
         String hasil = "";
         long jum = 1;
@@ -163,7 +165,7 @@ public class returDao {
 //        String sql = "select max(right(koderetur,4)) from retur "
 //                + "where substring(koderetur,4,2)='" + Util.getbln(tgl) + "' "
 //                + "and substring(koderetur,6,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
-        
+
         String sql = "select max(right(koderetur,4)) from retur "
                 + "where substring(koderetur,4,2)='" + Util.getthn(tgl).substring(2, 4) + "'";
         try {
@@ -175,11 +177,27 @@ public class returDao {
                     jum = rs.getInt(1) + 1;
                 }
             }
-            hasil ="RJ."+ com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
+            hasil = "RJ." + com.erv.function.Util.getthn(tgl).substring(2, 4) + "" + new PrintfFormat("%04d").sprintf(jum);
             rs.close();
             stat.close();
         } catch (SQLException ex) {
             System.out.println(ex.toString());
+        }
+        return hasil;
+    }
+
+    public static int getJumlahRetur(Connection c, int IDjual, String kodebarang, String kodebatch) throws SQLException {
+        String sql = "select sum(JUMLAHKECIL) as stok from retur r inner join RETURRINCI rr on r.id = rr.IDRETUR "
+                + "where IDPENJUALAN=? and kodebarang = ? and KODEBATCH=? "
+                + "";
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, IDjual);
+        ps.setString(2, kodebarang);
+        ps.setString(3, kodebatch);
+        ResultSet rs = ps.executeQuery();
+        int hasil = 0;
+        if(rs.next()){
+            hasil = rs.getInt(1);
         }
         return hasil;
     }
