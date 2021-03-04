@@ -7,7 +7,6 @@ package com.erv.db;
 import com.erv.exception.JavarieException;
 import com.erv.function.PrintfFormat;
 import com.erv.function.Util;
-import com.erv.model.Barangstok;
 import com.erv.model.DO;
 import com.erv.model.Nofak;
 import com.erv.model.bank;
@@ -182,7 +181,13 @@ public class penjualanDao {
             }
 
             if (ppn != 0) {
-                s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                if (p.getKODEPAJAK().equals("010")) { //ppn keluaran
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("020")) { // ppn keluaran 10%, pph pasal 22 1.5 % dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDIPUNGUT") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("070")) { // ppn keluaran 10%, pph pasal 22 1.5% dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDITANGGUNG") + "',0," + ppn + ",3,'')");
+                }
             }
             if (bonus != 0) {
                 s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PERSEDIAANBONUS") + "',0," + bonus + ",7,'PERSEDIAANBONUS')");
@@ -208,7 +213,14 @@ public class penjualanDao {
                 s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "DISKONJUAL") + "'," + diskon + ",0,2,'')");
             }
             if (ppn != 0) {
-                s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                if (p.getKODEPAJAK().equals("010")) { //ppn keluaran
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("020")) { // ppn keluaran 10%, pph pasal 22 1.5 % dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDIPUNGUT") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("070")) { // ppn keluaran 10%, pph pasal 22 1.5% dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDITANGGUNG") + "',0," + ppn + ",3,'')");
+                }
+                //s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
             }
             if (bonus != 0) {
                 s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PERSEDIAANBONUS") + "',0," + bonus + ",7,'PERSEDIAANBONUS')");
@@ -231,7 +243,14 @@ public class penjualanDao {
                 s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "DISKONJUAL") + "'," + diskon + ",0,2,'')");
             }
             if (ppn != 0) {
-                s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                //s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                if (p.getKODEPAJAK().equals("010")) { //ppn keluaran
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNJUAL") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("020")) { // ppn keluaran 10%, pph pasal 22 1.5 % dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDIPUNGUT") + "',0," + ppn + ",3,'')");
+                } else if (p.getKODEPAJAK().equals("070")) { // ppn keluaran 10%, pph pasal 22 1.5% dpp
+                    s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PPNDITANGGUNG") + "',0," + ppn + ",3,'')");
+                }
             }
             if (bonus != 0) {
                 s.addBatch("insert into RINCIJURNAL values(" + IDJurnal + ",'" + settingDao.getAkun(con, "PERSEDIAANBONUS") + "',0," + bonus + ",7,'PERSEDIAANBONUS')");

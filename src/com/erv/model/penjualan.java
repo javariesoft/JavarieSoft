@@ -36,6 +36,7 @@ public class penjualan implements Serializable {
     private double DISKONPERSEN;
     private List<rincipenjualan> rincipenjualans;
     private jurnal jurnal;
+    private String KODEPAJAK;
 
     public penjualan() {
         this.ID = 0;
@@ -262,4 +263,14 @@ public class penjualan implements Serializable {
         }
         return hpp;
     }
+
+    public String getKODEPAJAK() {
+        return KODEPAJAK;
+    }
+
+    public void setKODEPAJAK(String KODEPAJAK) {
+        this.KODEPAJAK = KODEPAJAK;
+    }
+    
+    
 }
