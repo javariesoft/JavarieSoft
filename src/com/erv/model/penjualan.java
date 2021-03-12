@@ -37,6 +37,7 @@ public class penjualan implements Serializable {
     private List<rincipenjualan> rincipenjualans;
     private jurnal jurnal;
     private String KODEPAJAK;
+    private String DIGUNGGUNG;
 
     public penjualan() {
         this.ID = 0;
@@ -53,6 +54,7 @@ public class penjualan implements Serializable {
         this.JENISTRANS = "";
         this.ONGKOSKIRIM = 0;
         this.DISKONPERSEN = 0;
+        this.DIGUNGGUNG = "0";
         rincipenjualans = new ArrayList<>();
 
     }
@@ -271,6 +273,12 @@ public class penjualan implements Serializable {
     public void setKODEPAJAK(String KODEPAJAK) {
         this.KODEPAJAK = KODEPAJAK;
     }
-    
-    
+
+    public String getDIGUNGGUNG() {
+        return DIGUNGGUNG;
+    }
+
+    public void setDIGUNGGUNG(String DIGUNGGUNG) {
+        this.DIGUNGGUNG = DIGUNGGUNG;
+    }
 }
