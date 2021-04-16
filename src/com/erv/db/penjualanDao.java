@@ -9,6 +9,7 @@ import com.erv.function.PrintfFormat;
 import com.erv.function.Util;
 import com.erv.model.DO;
 import com.erv.model.Nofak;
+import com.erv.model.NomorPajak;
 import com.erv.model.bank;
 import com.erv.model.jurnal;
 import com.erv.model.penjualan;
@@ -538,6 +539,12 @@ public class penjualanDao {
         }
 
         return hasil;
+    }
+
+    public static String getNoFakturPajak(Connection con, String jenisplg) throws SQLException {
+        NomorPajak nomorPajak = NomorpajakDao.getNomorpajakAkhir(con);
+        String nofakturpajak = jenisplg + "." + nomorPajak.getNoakhirpakai();
+        return nofakturpajak;
     }
 
     public static class triggerPenjualan implements Trigger {
