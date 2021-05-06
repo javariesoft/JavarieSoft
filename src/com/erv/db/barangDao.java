@@ -224,4 +224,8 @@ public class barangDao {
         return hasil;
     }
     
+    public static void importDataBarang(Connection con, List<barang> barangList){
+        
+    }
+    
 }

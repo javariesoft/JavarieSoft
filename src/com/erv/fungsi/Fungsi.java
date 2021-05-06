@@ -242,7 +242,6 @@ public class Fungsi {
         return hasil;
     }
 
-    
     public static double getDebetTanggal(Connection conn, String kodeakun, String tanggal) {
         double hasil = 0;
         String t[] = Util.split(tanggal, "-");
@@ -305,7 +304,6 @@ public class Fungsi {
         return hasil;
     }
 
-    
     public static double getKreditTanggal(Connection conn, String kodeakun, String tanggal) {
         double hasil = 0;
         String t[] = Util.split(tanggal, "-");
@@ -344,22 +342,22 @@ public class Fungsi {
 
         return hasil;
     }
-    
+
     public static double getSaldoAwalKasPenjualan(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
-        String sql="";
-        if(pajak){
+        String sql = "";
+        if (pajak) {
             sql = "select ifnull((sum(debet)-sum(kredit)),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
-                + "where j.KODEJURNAL in (select faktur from penjualan where ppn<>0) and rj.KODEPERKIRAAN like '" + kodeakun + "%'  "
-                + "and tanggal < '"+tanggal+"'"
-                + "";
-        }else{
+                    + "where j.KODEJURNAL in (select faktur from penjualan where ppn<>0) and rj.KODEPERKIRAAN like '" + kodeakun + "%'  "
+                    + "and tanggal < '" + tanggal + "'"
+                    + "";
+        } else {
             sql = "select ifnull((sum(debet)-sum(kredit)),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
-                + "where j.KODEJURNAL in (select faktur from penjualan where ppn=0) and rj.KODEPERKIRAAN like '" + kodeakun + "%'  "
-                + "and tanggal < '"+tanggal+"'"
-                + "";
+                    + "where j.KODEJURNAL in (select faktur from penjualan where ppn=0) and rj.KODEPERKIRAAN like '" + kodeakun + "%'  "
+                    + "and tanggal < '" + tanggal + "'"
+                    + "";
         }
-        
+
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(sql);
@@ -377,8 +375,8 @@ public class Fungsi {
 
     public static double getSaldoAwalKasPiutang(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
-        String sql="";
-        if(pajak){
+        String sql = "";
+        if (pajak) {
             sql = "select "
                     + "    sum(debet) - sum (kredit) as saldo "
                     + "from "
@@ -416,7 +414,7 @@ public class Fungsi {
                     + "        ) "
                     + "    ) "
                     + "    and rj.KODEPERKIRAAN like '11110' "
-                    + "    and tanggal < '"+tanggal+"' "
+                    + "    and tanggal < '" + tanggal + "' "
                     + "";
         } else {
             sql = "select "
@@ -482,7 +480,7 @@ public class Fungsi {
                     + "        ) "
                     + "    ) "
                     + "    and rj.KODEPERKIRAAN like '11110' "
-                    + "    and tanggal < '"+tanggal+"' "
+                    + "    and tanggal < '" + tanggal + "' "
                     + "";
         }
 
@@ -503,25 +501,25 @@ public class Fungsi {
 
     public static double getSaldoAwalKasPembelian(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
-        String sql="";
-        if(pajak){
+        String sql = "";
+        if (pajak) {
             sql = "select ifnull(sum(debet) - sum(kredit),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
                     + "where j.KODEJURNAL in ( "
                     + "select NOFAKTUR from PEMBELIAN beli where pajak<>0 "
                     + ")  "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"%' "
-                    + "and tanggal < '"+ tanggal +"'"
+                    + "and rj.KODEPERKIRAAN like '" + kodeakun + "%' "
+                    + "and tanggal < '" + tanggal + "'"
                     + "";
-        }else{
+        } else {
             sql = "select ifnull(sum(debet) - sum(kredit),0) as saldo from JURNAL j inner join RINCIJURNAL rj on j.id = rj.KODEJURNAL "
                     + "where j.KODEJURNAL in ( "
                     + "select NOFAKTUR from PEMBELIAN beli where pajak=0 "
                     + ")  "
-                    + "and rj.KODEPERKIRAAN like '"+kodeakun+"%' "
-                    + "and tanggal < '"+ tanggal +"'"
+                    + "and rj.KODEPERKIRAAN like '" + kodeakun + "%' "
+                    + "and tanggal < '" + tanggal + "'"
                     + "";
         }
-        
+
         try {
             Statement stat = conn.createStatement();
             ResultSet rs = stat.executeQuery(sql);
@@ -539,8 +537,8 @@ public class Fungsi {
 
     public static double getSaldoAwalKasHutang(Connection conn, String kodeakun, String tanggal, boolean pajak) {
         double hasil = 0;
-        String sql="";
-        if(pajak){
+        String sql = "";
+        if (pajak) {
             sql = "select "
                     + "   sum (debet) - sum (kredit) as saldo "
                     + "from "
@@ -578,7 +576,7 @@ public class Fungsi {
                     + "        ) "
                     + "    ) "
                     + "    and rj.KODEPERKIRAAN like '11110' "
-                    + "   and tanggal < '"+tanggal+"' "
+                    + "   and tanggal < '" + tanggal + "' "
                     + "";
         } else {
             sql = "select "
@@ -644,7 +642,7 @@ public class Fungsi {
                     + "        ) "
                     + "    ) "
                     + "    and rj.KODEPERKIRAAN like '11110' "
-                    + "   and tanggal < '"+tanggal+"' "
+                    + "   and tanggal < '" + tanggal + "' "
                     + "";
         }
 
@@ -697,7 +695,6 @@ public class Fungsi {
         return hasil;
     }
 
-    
     public static double getPembelian(Connection conn, int bulan, int tahun) {
         double hasil = 0;
         String sql = "SELECT\n"
@@ -745,7 +742,7 @@ public class Fungsi {
 
         return hasil;
     }
- 
+
     public static double getPenjualan(Connection conn, int bulan, int tahun) {
         double totjual = 0, totongkir = 0;
         String sql = "select sum(jumlah * harga - rp.diskon) from penjualan p inner join RINCIPENJUALAN rp "
@@ -815,7 +812,6 @@ public class Fungsi {
         return tot;
     }
 
-    
     public static double getPersediaanAkhir(Connection conn, int bulan, int tahun) {
         double hasil = 0;
 //        String sql = "select sum(cogs * jumlah) from stokperiode where PERIODE='"+tahun+"."+bulan+"'";
@@ -844,7 +840,7 @@ public class Fungsi {
         }
         return hasil;
     }
-    
+
     public static double getSaldoLR(Connection conn, String akun, int tahun) {
         double hasil = 0.0;
         if (akun.substring(0, 1).equals("5")) {
@@ -961,12 +957,36 @@ public class Fungsi {
         return hasil;
     }
 
+    public static int getSaldoAwalBonus(Connection con, String kodebarang, String tanggal) throws SQLException {
+        String sql = "select sum(in)-sum(out)  "
+                + "from viewbarangbonus  "
+                + "where kodebarang = ? and tanggal <= ? "
+                + "group by KODEBARANG "
+                + "";
+        String sql_tgl = "select FORMATDATETIME(date '" + tanggal + "' - 1,'yyyy-MM-dd')";
+        Statement stat = con.createStatement();
+        ResultSet rs = stat.executeQuery(sql_tgl);
+        String tglakhir = tanggal;
+        if (rs.next()) {
+            tglakhir = rs.getString(1);
+        }
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, kodebarang);
+        ps.setString(2, tglakhir);
+        ResultSet rs1 = ps.executeQuery();
+        if (rs1.next()) {
+            return rs1.getInt(1);
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         try {
             koneksi.createPoolKoneksi();
             Connection con = koneksi.getKoneksiJ();
-            System.out.println("Hutang" + getSaldoAwalKasHutang(con,"11110","2020-01-01", true));
-            System.out.println("Piutang" + getSaldoAwalKasPiutang(con,"11110","2020-01-01", true));
+            //System.out.println("Hutang" + getSaldoAwalKasHutang(con,"11110","2020-01-01", true));
+            //System.out.println("Piutang" + getSaldoAwalKasPiutang(con,"11110","2020-01-01", true));
+            System.out.println("Saldo Awal Bonus " + getSaldoAwalBonus(con, "00071", "2016-12-15"));
             con.close();
         } catch (Exception ex) {
             Logger.getLogger(Fungsi.class.getName()).log(Level.SEVERE, null, ex);
@@ -1006,5 +1026,5 @@ public class Fungsi {
         }
         return hasil;
     }
-    
+
 }
